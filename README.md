@@ -1,2 +1,2 @@
-# tellraw-lib
-A library generating tellraw JSON for Minecraft.
+# mc-text
+A library generating JSON text for Minecraft.

@@ -1,2 +1,2 @@
 # mc-text
-A library generating JSON text for Minecraft.
+A library for generating JSON text for Minecraft: Java Edition.

@@ -3,11 +3,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.whirvis.mc</groupId>
-	<artifactId>text</artifactId>
+	<groupId>com.whirvis</groupId>
+	<artifactId>mc.text</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -15,23 +26,20 @@
 		</dependency>
 		
 		<dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>com.c05mic.generictree</groupId>
+			<artifactId>GenericN-aryTree</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.17-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-
+	
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-		</plugins>
+		<defaultGoal>clean package install</defaultGoal>
 	</build>
 </project>

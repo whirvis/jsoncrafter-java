@@ -1,6 +1,6 @@
 package com.whirvis.mc.text;
 
-import org.eclipse.jdt.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * A container for plain Minecraft text.
@@ -8,24 +8,18 @@ import org.eclipse.jdt.annotation.Nullable;
  * @see TranslatedText
  * @see KeybindText
  */
-public class PlainText extends MinecraftText<String> {
+public class PlainText extends MinecraftText {
 
 	/**
 	 * Constructs a new instance of {@code PlainText}.
 	 * 
 	 * @param text
 	 *            the content of this text.
+	 * @throws NullPointerException
+	 *             if {@code text} is {@code null}.
 	 */
-	public PlainText(@Nullable String text) {
-		super("text");
-		this.setContent(text);
-	}
-
-	/**
-	 * Constructs a new instance of {@code PlainText} with no content.
-	 */
-	public PlainText() {
-		this(null);
+	public PlainText(@Nonnull String text) {
+		super("text", text);
 	}
 
 }

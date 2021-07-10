@@ -1,9 +1,10 @@
 package com.whirvis.mc.text;
 
-import org.eclipse.jdt.annotation.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * A container for translated Minecraft text.
@@ -11,80 +12,23 @@ import com.google.gson.JsonElement;
  * @see PlainText
  * @see KeybindText
  */
-public class TranslatedText extends MinecraftText<String> {
+public class TranslatedText extends MinecraftText {
 
-	private static int getArgCount(String format) {
-		int count = 0;
-		char[] c = format.toCharArray();
-		for (int i = 0; i < c.length; i++) {
-			if (c[i] != '%' || i + 1 >= c.length) {
-				continue;
-			}
-			char type = c[i++];
-			if (!Character.isWhitespace(type) && type != '%') {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private String translate;
 	private Object[] with;
 
 	/**
 	 * Constructs a new instance of {@code TranslatedText}.
 	 * 
 	 * @param translate
-	 *            the content of this text, that being the translation key.
+	 *            the translation key.
 	 * @param with
 	 *            the parameters to format this text with.
+	 * @throws NullPointerException
+	 *             if {@code translate} is {@code null}.
 	 */
-	public TranslatedText(@Nullable String translate,
-			@Nullable Object... with) {
-		super("translate");
-		this.setTranslation(translate, with);
-	}
-
-	/**
-	 * Constructs a new instance of {@code TranslatedText} with no content.
-	 */
-	public TranslatedText() {
-		this(null);
-	}
-
-	/**
-	 * Returns the content of this text, that being the translation key.
-	 * 
-	 * @return the content of this text, that being the translation key.
-	 */
-	@Override
-	public String getContent() {
-		return this.translate;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @param translate
-	 *            the content of this text, that being the translation key.
-	 */
-	@Override
-	public void setContent(String translate) {
-		this.translate = translate;
-		super.setContent(translate);
-	}
-
-	/**
-	 * Returns the parameters this text is being formatted with.
-	 * <p>
-	 * If a parameters is missing at translation time, the in game default is to
-	 * leave it as an empty string.
-	 * 
-	 * @return the parameters this text is being formatted with.
-	 */
-	@Nullable
-	public Object[] getWith() {
-		return this.with;
+	public TranslatedText(@Nonnull String translate, @Nullable Object... with) {
+		super("translate", translate);
+		this.setWith(with);
 	}
 
 	/**
@@ -95,57 +39,13 @@ public class TranslatedText extends MinecraftText<String> {
 	 */
 	public void setWith(@Nullable Object... with) {
 		this.with = with;
-		if (with == null || with.length == 0) {
-			json.remove("with");
-			return;
-		}
-
-		JsonArray jsonWith = new JsonArray();
-		for (int i = 0; i < with.length; i++) {
-			Object param = with[i];
-			if (param instanceof Boolean) {
-				jsonWith.add((Boolean) param);
-			} else if (param instanceof Character) {
-				jsonWith.add((Character) param);
-			} else if (param instanceof JsonElement) {
-				jsonWith.add((JsonElement) param);
-			} else if (param instanceof Number) {
-				jsonWith.add((Number) param);
-			} else if (param instanceof String) {
-				jsonWith.add((String) param);
-			} else {
-				throw new IllegalArgumentException("unsupported type");
-			}
-		}
-		json.add("with", jsonWith);
-	}
-
-	/**
-	 * Returns the formatted translation of this text.
-	 * <p>
-	 * If a parameters is missing at translation time, the in game default is to
-	 * leave it as an empty string.
-	 * 
-	 * @return the formatted translation of this text.
-	 */
-	public String getTranslation() {
-		int argCount = getArgCount(translate);
-		Object[] args = new Object[argCount];
-		for (int i = 0; i < args.length; i++) {
-			if (i < with.length) {
-				args[i] = with[i];
-			} else {
-				args[i] = new String();
-			}
-		}
-		return String.format(translate, args);
 	}
 
 	/**
 	 * Sets the translation of this text.
 	 * 
 	 * @param translate
-	 *            the content of this text, that being the translation key.
+	 *            the translation key.
 	 * @param with
 	 *            the parameters to format this text with.
 	 */
@@ -153,6 +53,21 @@ public class TranslatedText extends MinecraftText<String> {
 			@Nullable Object... with) {
 		this.setContent(translate);
 		this.setWith(with);
+	}
+
+	@Override
+	public JsonObject toJson() {
+		JsonObject json = super.toJson();
+		if (with == null || with.length <= 0) {
+			return json;
+		}
+
+		JsonArray jsonWith = new JsonArray();
+		for (int i = 0; i < with.length; i++) {
+			jsonWith.add(toJsonElement(with[i]));
+		}
+		json.add("with", jsonWith);
+		return json;
 	}
 
 }

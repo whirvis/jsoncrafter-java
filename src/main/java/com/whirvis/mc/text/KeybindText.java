@@ -1,6 +1,6 @@
 package com.whirvis.mc.text;
 
-import org.eclipse.jdt.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * A container for a player's keybind.
@@ -8,24 +8,18 @@ import org.eclipse.jdt.annotation.Nullable;
  * @see PlainText
  * @see TranslatedText
  */
-public class KeybindText extends MinecraftText<String> {
+public class KeybindText extends MinecraftText {
 
 	/**
 	 * Constructs a new instance of {@code KeybindText}.
 	 * 
-	 * @param key
-	 *            the content of this text, that being the name of this keybind.
+	 * @param keybind
+	 *            the name of this keybind.
+	 * @throws NullPointerException
+	 *             if {@code key} is {@code null}.
 	 */
-	public KeybindText(@Nullable String key) {
-		super("keybind");
-		this.setContent(key);
-	}
-
-	/**
-	 * Constructs a new instance of {@code KeybindText} with no content.
-	 */
-	public KeybindText() {
-		this(null);
+	public KeybindText(@Nonnull String keybind) {
+		super("keybind", keybind);
 	}
 
 }

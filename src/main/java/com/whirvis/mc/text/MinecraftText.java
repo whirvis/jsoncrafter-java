@@ -1,27 +1,44 @@
 package com.whirvis.mc.text;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.bukkit.ChatColor;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.bukkit.ChatColor;
+
+import com.c05mic.generictree.Tree;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.whirvis.mc.text.event.TextEvent;
 
 /**
- * A container for text formatted using the Minecraft raw JSON text format.
+ * A container for text formatted using the
+ * <a href="https://minecraft.fandom.com/wiki/Raw_JSON_text_format">Minecraft
+ * raw JSON text format</a>.
  *
- * @param <T>
- *            the content type.
  * @see PlainText
  * @see TranslatedText
  * @see KeybindText
- * @see https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Content_types
  */
-public abstract class MinecraftText<T> {
+public abstract class MinecraftText {
+
+	/*
+	 * We're required to create our own GSON instance stop null values from
+	 * being serialized. For whatever reason, the toString() built into JSON
+	 * objects will serialize null values by default.
+	 */
+	public static final Gson GSON = new GsonBuilder().create();
 
 	/**
 	 * Converts an iterable of {@code MinecraftText} instances into a JSON
@@ -33,19 +50,19 @@ public abstract class MinecraftText<T> {
 	 *         {@code texts}.
 	 */
 	@Nullable
-	public static String toString(@Nullable Iterable<MinecraftText<?>> texts) {
+	public static JsonArray toJson(@Nullable Iterable<MinecraftText> texts) {
 		if (texts == null) {
 			return null;
 		}
 		JsonArray jsonTexts = new JsonArray();
-		Iterator<MinecraftText<?>> textsI = texts.iterator();
+		Iterator<MinecraftText> textsI = texts.iterator();
 		while (textsI.hasNext()) {
-			MinecraftText<?> text = textsI.next();
+			MinecraftText text = textsI.next();
 			if (text != null) {
-				jsonTexts.add(text.json);
+				jsonTexts.add(text.toJson());
 			}
 		}
-		return jsonTexts.toString();
+		return jsonTexts;
 	}
 
 	/**
@@ -58,28 +75,66 @@ public abstract class MinecraftText<T> {
 	 *         {@code texts}.
 	 */
 	@Nullable
-	public static String toString(@Nullable MinecraftText<?>... texts) {
-		return toString(texts != null ? Arrays.asList(texts) : null);
+	public static JsonArray toJson(@Nullable MinecraftText... texts) {
+		return toJson(texts != null ? Arrays.asList(texts) : null);
 	}
-
-	private final String type;
-	protected final JsonObject json;
 
 	/**
-	 * Constructs a new instance of {@code MinecraftText} and sets its
-	 * parameters based on the specified JSON object.
+	 * Takes in a value and returns it, unless it is {@code null}. In which
+	 * case, a given fallback value is returned instead.
 	 * 
-	 * @param type
-	 *            the content type of this text.
-	 * @param json
-	 *            the JSON to operate on.
-	 * @throws NullPointerException
-	 *             if {@code type} or {@code json} are {@code null}.
+	 * @param <T>
+	 *            the value type.
+	 * @param value
+	 *            the original value.
+	 * @param fallback
+	 *            the value to return if {@code value} is {@code null}.
+	 * @return {@code value} if not {@code null}, {@code fallback} otherwise.
 	 */
-	public MinecraftText(@NonNull String type, @NonNull JsonObject json) {
-		this.type = Objects.requireNonNull(type, "type");
-		this.json = Objects.requireNonNull(json, "json");
+	@Nullable
+	public static <T> T nullFallback(@Nullable T value, @Nullable T fallback) {
+		return value != null ? value : fallback;
 	}
+
+	/**
+	 * Attempts to convert an object to a {@link JsonElement}.
+	 * 
+	 * @param obj
+	 *            the object to convert.
+	 * @return the converted object as a JSON element.
+	 * @throws IllegalArgumentException
+	 *             if {@code obj} is of an unsupported type.
+	 */
+	@Nonnull /* assuming JsonNull doesn't count */
+	protected static JsonElement toJsonElement(@Nullable Object obj) {
+		if (obj == null) {
+			return JsonNull.INSTANCE;
+		} else if (obj instanceof JsonElement) {
+			return (JsonElement) obj;
+		} else if (obj instanceof Boolean) {
+			return new JsonPrimitive((Boolean) obj);
+		} else if (obj instanceof Character) {
+			return new JsonPrimitive((Character) obj);
+		} else if (obj instanceof Number) {
+			return new JsonPrimitive((Number) obj);
+		} else if (obj instanceof String) {
+			return new JsonPrimitive((String) obj);
+		}
+		throw new IllegalArgumentException("unsupported type");
+	}
+
+	private String type;
+	private Object content;
+	private Tree<MinecraftText> extra;
+	private String color;
+	private String font;
+	private Boolean bold;
+	private Boolean italic;
+	private Boolean strikethrough;
+	private Boolean underlined;
+	private Boolean obfuscated;
+	private String insertion;
+	private HashMap<String, TextEvent> events;
 
 	/**
 	 * Constructs a new instance of {@code MinecraftText} and sets its
@@ -87,9 +142,16 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @param type
 	 *            the content type of this text.
+	 * @param json
+	 *            the JSON to operate on.
+	 * @throws NullPointerException
+	 *             if {@code type} or {@code content} are {@code null}.
 	 */
-	public MinecraftText(String type) {
-		this(type, new JsonObject());
+	public MinecraftText(@Nonnull String type, @Nonnull Object content) {
+		this.setType(type);
+		this.setContent(content);
+		this.extra = new Tree<>(null);
+		this.events = new HashMap<>();
 	}
 
 	/**
@@ -97,47 +159,32 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @return the content type of this text.
 	 */
+	@Nonnull
 	public String getType() {
 		return this.type;
 	}
 
-	protected String getString(String name, String fallback) {
-		if (!json.has(name)) {
-			return fallback;
-		}
-		return json.get(name).getAsString();
-	}
-
-	protected void setString(String name, String value) {
-		if (value == null) {
-			json.remove(name);
-			return;
-		}
-		json.addProperty(name, value);
-	}
-
-	protected boolean getBoolean(String name, boolean fallback) {
-		if (!json.has(name)) {
-			return fallback;
-		}
-		return json.get(name).getAsBoolean();
-	}
-
-	protected void setBoolean(String name, Boolean value) {
-		if (value == null) {
-			json.remove(name);
-			return;
-		}
-		json.addProperty(name, value);
+	/**
+	 * Sets the content type of this text.
+	 * 
+	 * @param type
+	 *            the content type.
+	 * @throws NullPointerException
+	 *             if {@code type} is {@code null}.
+	 */
+	public void setType(@Nonnull String type) {
+		this.type = Objects.requireNonNull(type, "type");
 	}
 
 	/**
 	 * Returns the content of this text.
 	 * 
-	 * @return the content of this text.
+	 * @return the content of this text, may be {@code null} if the content has
+	 *         yet to be set.
 	 */
-	public String getContent() {
-		return this.getString(type, null);
+	@Nullable
+	public Object getContent() {
+		return this.content;
 	}
 
 	/**
@@ -145,9 +192,11 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @param content
 	 *            the content.
+	 * @throws NullPointerException
+	 *             if {@code content} is {@code null}.
 	 */
-	public void setContent(String content) {
-		this.setString(type, content);
+	public void setContent(@Nonnull Object content) {
+		this.content = Objects.requireNonNull(content, "content");
 	}
 
 	/**
@@ -156,49 +205,12 @@ public abstract class MinecraftText<T> {
 	 * Child text components inherit all formatting and interactivity from the
 	 * parent component, unless they explicitly override them.
 	 * 
-	 * @param extra
-	 *            the child components.
+	 * @param extra_
+	 *            the child components, {@code null} values are ignored.
 	 * @throws IllegalArgumentException
 	 *             if a child component is {@code this}.
 	 */
-	public void setExtra(@Nullable Iterable<MinecraftText<?>> extra) {
-		if (extra == null) {
-			json.remove("extra");
-			return;
-		}
-
-		JsonArray jsonExtra = new JsonArray();
-		Iterator<MinecraftText<?>> extraI = extra.iterator();
-		while (extraI.hasNext()) {
-			MinecraftText<?> text = extraI.next();
-			if (text == this) {
-				throw new IllegalArgumentException("parent cannot be child");
-			} else if (text != null) {
-				jsonExtra.add(text.json);
-			}
-		}
-
-		if (jsonExtra.isEmpty()) {
-			json.remove("extra");
-		} else {
-			json.add("extra", jsonExtra);
-		}
-	}
-
-	/**
-	 * Sets the child text components of this text.
-	 * <p>
-	 * Child text components inherit all formatting and interactivity from the
-	 * parent component, unless they explicitly override them.
-	 * 
-	 * @param extra
-	 *            the child components.
-	 * @throws IllegalArgumentException
-	 *             if a child component is {@code this}.
-	 */
-	public void setExtra(@Nullable MinecraftText<?>... extra) {
-		this.setExtra(extra != null ? Arrays.asList(extra) : null);
-	}
+	/* TODO */
 
 	/**
 	 * Returns the text color.
@@ -208,19 +220,20 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @return the text color.
 	 */
-	@NonNull
+	@Nonnull
 	public String getColor() {
-		return this.getString("color", "white");
+		return nullFallback(color, "white");
 	}
 
 	/**
 	 * Sets the text color.
 	 * 
 	 * @param color
-	 *            the color name.
+	 *            the color name. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 */
 	public void setColor(@Nullable String color) {
-		this.setString("color", color);
+		this.color = color;
 	}
 
 	/**
@@ -237,7 +250,8 @@ public abstract class MinecraftText<T> {
 	 * Sets the text color.
 	 * 
 	 * @param color
-	 *            the chat color.
+	 *            the chat color. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 * @throws IllegalArgumentException
 	 *             if {@code color} is not a color.
 	 */
@@ -258,19 +272,20 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @return the font this text is rendered with.
 	 */
-	@NonNull
+	@Nonnull
 	public String getFont() {
-		return this.getString("font", "minecraft:default");
+		return nullFallback(font, "minecraft:default");
 	}
 
 	/**
 	 * Sets the font this text is rendered with.
 	 * 
 	 * @param font
-	 *            the font to render this text with.
+	 *            the font to render this text with. May be {@code null} to have
+	 *            the parameter left absent from the encoded JSON.
 	 */
 	public void setFont(@Nullable String font) {
-		this.setString("font", font);
+		this.font = font;
 	}
 
 	/**
@@ -281,18 +296,19 @@ public abstract class MinecraftText<T> {
 	 * @return {@code true} if this text is bold, {@code false} otherwise.
 	 */
 	public boolean isBold() {
-		return this.getBoolean("bold", false);
+		return nullFallback(bold, false);
 	}
 
 	/**
 	 * Sets whether or not this text is bold.
 	 * 
-	 * @param italic
+	 * @param bold
 	 *            {@code true} if this text should be bold, {@code false}
-	 *            otherwise.
+	 *            otherwise. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 */
 	public void setBold(@Nullable Boolean bold) {
-		this.setBoolean("bold", bold);
+		this.bold = bold;
 	}
 
 	/**
@@ -303,7 +319,7 @@ public abstract class MinecraftText<T> {
 	 * @return {@code true} if this text is italic, {@code false} otherwise.
 	 */
 	public boolean isItalic() {
-		return this.getBoolean("italic", false);
+		return nullFallback(italic, false);
 	}
 
 	/**
@@ -311,10 +327,11 @@ public abstract class MinecraftText<T> {
 	 * 
 	 * @param italic
 	 *            {@code true} if this text should be italic, {@code false}
-	 *            otherwise.
+	 *            otherwise. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 */
 	public void setItalic(@Nullable Boolean italic) {
-		this.setBoolean("italic", italic);
+		this.italic = italic;
 	}
 
 	/**
@@ -325,18 +342,19 @@ public abstract class MinecraftText<T> {
 	 * @return {@code true} if this text is underlined, {@code false} otherwise.
 	 */
 	public boolean isUnderlined() {
-		return this.getBoolean("underlined", false);
+		return nullFallback(underlined, false);
 	}
 
 	/**
 	 * Sets whether or not this text is underlined.
 	 * 
-	 * @param italic
+	 * @param underlined
 	 *            {@code true} if this text should be underlined, {@code false}
-	 *            otherwise.
+	 *            otherwise. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 */
 	public void setUnderlined(@Nullable Boolean underlined) {
-		this.setBoolean("underlined", underlined);
+		this.underlined = underlined;
 	}
 
 	/**
@@ -348,18 +366,19 @@ public abstract class MinecraftText<T> {
 	 *         otherwise.
 	 */
 	public boolean isStrikethrough() {
-		return this.getBoolean("strikethrough", false);
+		return nullFallback(strikethrough, false);
 	}
 
 	/**
 	 * Sets whether or not this text is striked through.
 	 * 
-	 * @param italic
+	 * @param strikethrough
 	 *            {@code true} if this text should be striked through,
-	 *            {@code false} otherwise.
+	 *            {@code false} otherwise. May be {@code null} to have the
+	 *            parameter left absent from the encoded JSON.
 	 */
 	public void setStrikethrough(@Nullable Boolean strikethrough) {
-		this.setBoolean("strikethrough", strikethrough);
+		this.strikethrough = strikethrough;
 	}
 
 	/**
@@ -370,18 +389,19 @@ public abstract class MinecraftText<T> {
 	 * @return {@code true} if this text is obfuscated, {@code false} otherwise.
 	 */
 	public boolean isObfuscated() {
-		return this.getBoolean("obfuscated", false);
+		return nullFallback(obfuscated, false);
 	}
 
 	/**
 	 * Sets whether or not this text is obfuscated.
 	 * 
-	 * @param italic
+	 * @param obfuscated
 	 *            {@code true} if this text should be obfuscated, {@code false}
-	 *            otherwise.
+	 *            otherwise. May be {@code null} to have the parameter left
+	 *            absent from the encoded JSON.
 	 */
 	public void setObfuscated(@Nullable Boolean obfuscated) {
-		this.setBoolean("obfuscated", obfuscated);
+		this.obfuscated = obfuscated;
 	}
 
 	/**
@@ -393,9 +413,9 @@ public abstract class MinecraftText<T> {
 	 * @return the text that will be inserted into the player's chatbar when
 	 *         they shift click this text.
 	 */
-	@NonNull
+	@Nonnull
 	public String getInsertion() {
-		return this.getString("insertion", "");
+		return nullFallback(insertion, "");
 	}
 
 	/**
@@ -403,10 +423,72 @@ public abstract class MinecraftText<T> {
 	 * shift click this text.
 	 * 
 	 * @param insertion
-	 *            the text to insert when shift clicked.
+	 *            the text to insert when shift clicked. May be {@code null} to
+	 *            have the parameter left absent from the encoded JSON.
 	 */
 	public void setInsertion(@Nullable String insertion) {
-		this.setString("insertion", insertion);
+		this.insertion = insertion;
+	}
+
+	/**
+	 * Returns if this text has any events.
+	 * 
+	 * @return {@code true} if this text has any events, {@code false}
+	 *         otherwise.
+	 */
+	public boolean hasEvents() {
+		return !events.isEmpty();
+	}
+
+	/**
+	 * Returns if this text has an event of a given type.
+	 * 
+	 * @param type
+	 *            the event type.
+	 * @return {@code true} if this text has an event of {@code type},
+	 *         {@code false} otherwise.
+	 */
+	public boolean hasEvent(@Nullable String type) {
+		return events.containsKey(type);
+	}
+
+	/**
+	 * Returns the text events.
+	 * 
+	 * @return the text events.
+	 */
+	@Nonnull
+	public Collection<TextEvent> getEvents() {
+		return Collections.unmodifiableCollection(events.values());
+	}
+
+	/**
+	 * Adds a text event.
+	 * <p>
+	 * Keep in mind that only one event type can be present in text at a time.
+	 * If another event of the same type is already present, it will be
+	 * overriden by the one being added.
+	 * 
+	 * @param event
+	 *            the text event.
+	 * @throws NullPointerException
+	 *             if {@code event} is {@code null}.
+	 */
+	public void addEvent(@Nonnull TextEvent event) {
+		Objects.requireNonNull(event, "event");
+		events.put(event.getType(), event);
+	}
+
+	/**
+	 * Removes a text event.
+	 * 
+	 * @param event
+	 *            the text event.
+	 */
+	public void removeEvent(@Nullable TextEvent event) {
+		if (event != null) {
+			events.remove(event.getType(), event);
+		}
 	}
 
 	@Override
@@ -420,9 +502,51 @@ public abstract class MinecraftText<T> {
 		return Objects.equals(objStr, this.toString());
 	}
 
+	/**
+	 * Encodes the content into a JSON element.
+	 * <p>
+	 * By default, the content of this text will be encoded via the
+	 * {@link #toJsonElement(Object)} method. If the text content is a more
+	 * complex type, the extending class should override this method.
+	 * 
+	 * @return the encoded content.
+	 */
+	@Nonnull
+	public JsonElement encodeContent() {
+		return toJsonElement(content);
+	}
+
+	/**
+	 * Converts this text to JSON.
+	 * 
+	 * @return the encoded JSON.
+	 */
+	@Nonnull
+	public JsonObject toJson() {
+		JsonObject json = new JsonObject();
+		json.add(type, this.encodeContent());
+		if (!extra.isEmpty()) {
+			/* TODO */
+		}
+
+		json.addProperty("color", color);
+		json.addProperty("font", font);
+		json.addProperty("bold", bold);
+		json.addProperty("italic", italic);
+		json.addProperty("strikethrough", strikethrough);
+		json.addProperty("underlined", underlined);
+		json.addProperty("obfuscated", obfuscated);
+		json.addProperty("insertion", insertion);
+
+		for (TextEvent event : events.values()) {
+			json.add(event.getType(), event.toJson());
+		}
+		return json;
+	}
+
 	@Override
 	public String toString() {
-		return json.toString();
+		return GSON.toJson(this.toJson());
 	}
 
 }

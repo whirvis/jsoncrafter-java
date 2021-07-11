@@ -44,6 +44,9 @@ public class HoverEvent extends TextEvent {
 
 	/**
 	 * Sets the text that will be shown.
+	 * <p>
+	 * The appropriate call to {@link #setAction(String)} will be called
+	 * automatically to update event's action to {@value #SHOW_TEXT}.
 	 * 
 	 * @param values
 	 *            the values to persuade into {@link MinecraftText} objects
@@ -53,6 +56,7 @@ public class HoverEvent extends TextEvent {
 	 */
 	@Nonnull
 	public HoverEvent show(@Nullable Iterable<?> values) {
+		this.setAction(SHOW_TEXT);
 		List<MinecraftText> texts = new ArrayList<>();
 		for (Object value : values) {
 			if (value != null) {
@@ -67,6 +71,9 @@ public class HoverEvent extends TextEvent {
 
 	/**
 	 * Sets the text that will be shown.
+	 * <p>
+	 * The appropriate call to {@link #setAction(String)} will be called
+	 * automatically to update event's action to {@value #SHOW_TEXT}.
 	 * 
 	 * @param values
 	 *            the values to persuade into {@link MinecraftText} objects

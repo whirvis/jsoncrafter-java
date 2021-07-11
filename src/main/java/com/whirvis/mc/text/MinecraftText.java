@@ -1,10 +1,13 @@
 package com.whirvis.mc.text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -12,7 +15,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.ChatColor;
 
-import com.c05mic.generictree.Tree;
+import com.c05mic.generictree.Node;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -39,46 +42,7 @@ public abstract class MinecraftText {
 	 * objects will serialize null values by default.
 	 */
 	public static final Gson GSON = new GsonBuilder().create();
-
-	/**
-	 * Converts an iterable of {@code MinecraftText} instances into a JSON
-	 * string, accounting for the fact there may only one or multiple.
-	 * 
-	 * @param texts
-	 *            the minecraft texts.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}.
-	 */
-	@Nullable
-	public static JsonArray toJson(@Nullable Iterable<MinecraftText> texts) {
-		if (texts == null) {
-			return null;
-		}
-		JsonArray jsonTexts = new JsonArray();
-		Iterator<MinecraftText> textsI = texts.iterator();
-		while (textsI.hasNext()) {
-			MinecraftText text = textsI.next();
-			if (text != null) {
-				jsonTexts.add(text.toJson());
-			}
-		}
-		return jsonTexts;
-	}
-
-	/**
-	 * Converts an array of {@code MinecraftText} instances into a JSON string,
-	 * accounting for the fact there may only one or multiple.
-	 * 
-	 * @param texts
-	 *            the minecraft texts.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}.
-	 */
-	@Nullable
-	public static JsonArray toJson(@Nullable MinecraftText... texts) {
-		return toJson(texts != null ? Arrays.asList(texts) : null);
-	}
-
+	
 	/**
 	 * Takes in a value and returns it, unless it is {@code null}. In which
 	 * case, a given fallback value is returned instead.
@@ -94,6 +58,66 @@ public abstract class MinecraftText {
 	@Nullable
 	public static <T> T nullFallback(@Nullable T value, @Nullable T fallback) {
 		return value != null ? value : fallback;
+	}
+
+	/**
+	 * Persuades a value into a Minecraft text object.
+	 * <p>
+	 * If it is already an instance of {@code MinecraftText}, it is simply
+	 * returned. If not, it is converted to {@link PlainText} using
+	 * {@link Object#toString()}.
+	 * 
+	 * @param value
+	 *            the value to persuade.
+	 * @return the persuaded text.
+	 */
+	@Nullable
+	public static MinecraftText persuade(@Nullable Object value) {
+		if (value == null) {
+			return null;
+		} else if (value instanceof MinecraftText) {
+			return (MinecraftText) value;
+		}
+		return new PlainText(value.toString());
+	}
+
+	/**
+	 * Persuades the given values into a Minecraft text objects.
+	 * <p>
+	 * If one is already an instance of {@code MinecraftText}, it will be left
+	 * as is. If not, it will be converted to {@link PlainText} using
+	 * {@link Object#toString()}.
+	 * 
+	 * @param values
+	 *            the values to persuade.
+	 * @return the persuaded text.
+	 */
+	@Nullable
+	public static List<MinecraftText> persuade(@Nullable Iterable<?> values) {
+		if (values == null) {
+			return null;
+		}
+		List<MinecraftText> texts = new ArrayList<>();
+		for (Object value : values) {
+			texts.add(persuade(value));
+		}
+		return Collections.unmodifiableList(texts);
+	}
+
+	/**
+	 * Persuades the given values into a Minecraft text objects.
+	 * <p>
+	 * If one is already an instance of {@code MinecraftText}, it will be left
+	 * as is. If not, it will be converted to {@link PlainText} using
+	 * {@link Object#toString()}.
+	 * 
+	 * @param values
+	 *            the values to persuade.
+	 * @return the persuaded text.
+	 */
+	@Nullable
+	public static List<MinecraftText> persuade(@Nullable Object... values) {
+		return persuade(values != null ? Arrays.asList(values) : null);
 	}
 
 	/**
@@ -122,10 +146,91 @@ public abstract class MinecraftText {
 		}
 		throw new IllegalArgumentException("unsupported type");
 	}
+	
+	/**
+	 * Converts an array of values into a Minecraft JSON array, accounting for
+	 * the fact there may only one or multiple.
+	 * 
+	 * @param values
+	 *            the values to convert. Values not of instance
+	 *            {@code MinecraftText} will be automatically converted to
+	 *            {@link PlainText} using {@link Object#toString()}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static JsonArray toJson(@Nullable Iterable<?> values) {
+		if (values == null) {
+			return null;
+		}
+		JsonArray jsonTexts = new JsonArray();
+		Iterator<?> valuesI = values.iterator();
+		while (valuesI.hasNext()) {
+			Object value = valuesI.next();
+			if (value != null) {
+				jsonTexts.add(persuade(value).toJson());
+			}
+		}
+		return !jsonTexts.isEmpty() ? jsonTexts : null;
+	}
+
+	/**
+	 * Converts an array of values into a Minecraft JSON array, accounting for
+	 * the fact there may only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values not of instance
+	 *            {@code MinecraftText} will be automatically converted to
+	 *            {@link PlainText} using {@link Object#toString()}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static JsonArray toJson(@Nullable Object... texts) {
+		return toJson(texts != null ? Arrays.asList(texts) : null);
+	}
+	
+	/**
+	 * Converts an array of values into a Minecraft JSON string, accounting for
+	 * the fact there may only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values not of instance
+	 *            {@code MinecraftText} will be automatically converted to
+	 *            {@link PlainText} using {@link #toString()}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static String toString(@Nullable Iterable<?> texts) {
+		JsonElement json = toJson(texts);
+		return json != null ? GSON.toJson(json) : null;
+	}
+
+	/**
+	 * Converts an array of values into a Minecraft JSON string, accounting for
+	 * the fact there may only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values not of instance
+	 *            {@code MinecraftText} will be automatically converted to
+	 *            {@link PlainText} using {@link #toString()}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static String toString(@Nullable Object... texts) {
+		JsonElement json = toJson(texts);
+		return json != null ? GSON.toJson(json) : null;
+	}
 
 	private String type;
 	private Object content;
-	private Tree<MinecraftText> extra;
+	private Node<MinecraftText> extra;
 	private String color;
 	private String font;
 	private Boolean bold;
@@ -150,7 +255,7 @@ public abstract class MinecraftText {
 	public MinecraftText(@Nonnull String type, @Nonnull Object content) {
 		this.setType(type);
 		this.setContent(content);
-		this.extra = new Tree<>(null);
+		this.extra = new Node<>(this);
 		this.events = new HashMap<>();
 	}
 
@@ -169,20 +274,22 @@ public abstract class MinecraftText {
 	 * 
 	 * @param type
 	 *            the content type.
+	 * @return this text.
 	 * @throws NullPointerException
 	 *             if {@code type} is {@code null}.
 	 */
-	public void setType(@Nonnull String type) {
+	@Nonnull
+	public MinecraftText setType(@Nonnull String type) {
 		this.type = Objects.requireNonNull(type, "type");
+		return this;
 	}
 
 	/**
 	 * Returns the content of this text.
 	 * 
-	 * @return the content of this text, may be {@code null} if the content has
-	 *         yet to be set.
+	 * @return the content of this text.
 	 */
-	@Nullable
+	@Nonnull
 	public Object getContent() {
 		return this.content;
 	}
@@ -192,25 +299,124 @@ public abstract class MinecraftText {
 	 * 
 	 * @param content
 	 *            the content.
+	 * @return this text.
 	 * @throws NullPointerException
 	 *             if {@code content} is {@code null}.
 	 */
-	public void setContent(@Nonnull Object content) {
+	@Nonnull
+	public MinecraftText setContent(@Nonnull Object content) {
 		this.content = Objects.requireNonNull(content, "content");
+		return this;
 	}
 
 	/**
-	 * Sets the child text components of this text.
+	 * Returns the child text components of this text.
+	 * 
+	 * @return the child text components of this text.
+	 */
+	@Nonnull
+	public List<MinecraftText> getExtra() {
+		List<MinecraftText> extraData = new ArrayList<>();
+		for (Node<MinecraftText> node : extra.getChildren()) {
+			extraData.add(node.getData());
+		}
+		return Collections.unmodifiableList(extraData);
+	}
+
+	/**
+	 * Adds the given child text components as extras.
 	 * <p>
 	 * Child text components inherit all formatting and interactivity from the
 	 * parent component, unless they explicitly override them.
 	 * 
-	 * @param extra_
-	 *            the child components, {@code null} values are ignored.
+	 * @param texts
+	 *            the child components.
+	 * @return this text.
+	 * @throws NullPointerException
+	 *             if {@code texts} or one of its values are {@code null}.
 	 * @throws IllegalArgumentException
 	 *             if a child component is {@code this}.
 	 */
-	/* TODO */
+	@Nonnull
+	public MinecraftText addExtra(@Nonnull Iterable<MinecraftText> texts) {
+		Objects.requireNonNull(texts, "texts");
+		for (MinecraftText text : texts) {
+			Objects.requireNonNull(text, "text");
+			extra.addChild(text.extra);
+		}
+		return this;
+	}
+
+	/**
+	 * Adds the given child text components as extras.
+	 * <p>
+	 * Child text components inherit all formatting and interactivity from the
+	 * parent component, unless they explicitly override them.
+	 * 
+	 * @param texts
+	 *            the child components.
+	 * @return this text.
+	 * @throws NullPointerException
+	 *             if {@code texts} or one of its values are {@code null}.
+	 * @throws IllegalArgumentException
+	 *             if a child component is {@code this}.
+	 */
+	@Nonnull
+	public MinecraftText addExtra(@Nonnull MinecraftText... texts) {
+		Objects.requireNonNull(texts, "texts");
+		return this.addExtra(Arrays.asList(texts));
+	}
+
+	/**
+	 * Removes the given child text components from this text.
+	 * 
+	 * @param texts
+	 *            the child components.
+	 * @return this text.
+	 */
+	@Nonnull
+	public MinecraftText removeExtra(@Nullable Iterable<MinecraftText> texts) {
+		if (texts == null) {
+			return this;
+		}
+
+		/* cache values for O(n) rather than O(n^2) */
+		Map<MinecraftText, Node<MinecraftText>> extras = new HashMap<>();
+		for (Node<MinecraftText> node : extra.getChildren()) {
+			extras.put(node.getData(), node);
+		}
+
+		for (MinecraftText text : texts) {
+			Node<MinecraftText> node = extras.get(text);
+			if (node != null) {
+				extra.removeChild(node);
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * Removes the given child text components from this text.
+	 * 
+	 * @param texts
+	 *            the child components.
+	 * @return this text.
+	 */
+	@Nonnull
+	public MinecraftText removeExtra(@Nullable MinecraftText... texts) {
+		return this.removeExtra(texts != null ? Arrays.asList(texts) : null);
+	}
+
+	/**
+	 * Clears all child components from this text.
+	 * 
+	 * @return this text.
+	 */
+	@Nonnull
+	public MinecraftText clearExtra() {
+		extra.removeChildren();
+		return this;
+	}
 
 	/**
 	 * Returns the text color.
@@ -231,9 +437,12 @@ public abstract class MinecraftText {
 	 * @param color
 	 *            the color name. May be {@code null} to have the parameter left
 	 *            absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setColor(@Nullable String color) {
+	@Nonnull
+	public MinecraftText setColor(@Nullable String color) {
 		this.color = color;
+		return this;
 	}
 
 	/**
@@ -241,9 +450,11 @@ public abstract class MinecraftText {
 	 * 
 	 * @param rgb
 	 *            the RGB color value.
+	 * @return this text.
 	 */
-	public void setColor(int rgb) {
-		this.setColor("#" + Integer.toHexString(rgb));
+	@Nonnull
+	public MinecraftText setColor(int rgb) {
+		return this.setColor("#" + Integer.toHexString(rgb));
 	}
 
 	/**
@@ -254,15 +465,16 @@ public abstract class MinecraftText {
 	 *            absent from the encoded JSON.
 	 * @throws IllegalArgumentException
 	 *             if {@code color} is not a color.
+	 * @return this text.
 	 */
-	public void setColor(@Nullable ChatColor color) {
+	@Nonnull
+	public MinecraftText setColor(@Nullable ChatColor color) {
 		if (color == null) {
-			this.setColor((String) null);
-			return;
+			return this.setColor((String) null);
 		} else if (!color.isColor()) {
 			throw new IllegalArgumentException("not a color");
 		}
-		this.setColor(color.name().toLowerCase());
+		return this.setColor(color.name().toLowerCase());
 	}
 
 	/**
@@ -283,9 +495,12 @@ public abstract class MinecraftText {
 	 * @param font
 	 *            the font to render this text with. May be {@code null} to have
 	 *            the parameter left absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setFont(@Nullable String font) {
+	@Nonnull
+	public MinecraftText setFont(@Nullable String font) {
 		this.font = font;
+		return this;
 	}
 
 	/**
@@ -306,9 +521,12 @@ public abstract class MinecraftText {
 	 *            {@code true} if this text should be bold, {@code false}
 	 *            otherwise. May be {@code null} to have the parameter left
 	 *            absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setBold(@Nullable Boolean bold) {
+	@Nonnull
+	public MinecraftText setBold(@Nullable Boolean bold) {
 		this.bold = bold;
+		return this;
 	}
 
 	/**
@@ -329,9 +547,12 @@ public abstract class MinecraftText {
 	 *            {@code true} if this text should be italic, {@code false}
 	 *            otherwise. May be {@code null} to have the parameter left
 	 *            absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setItalic(@Nullable Boolean italic) {
+	@Nonnull
+	public MinecraftText setItalic(@Nullable Boolean italic) {
 		this.italic = italic;
+		return this;
 	}
 
 	/**
@@ -352,9 +573,12 @@ public abstract class MinecraftText {
 	 *            {@code true} if this text should be underlined, {@code false}
 	 *            otherwise. May be {@code null} to have the parameter left
 	 *            absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setUnderlined(@Nullable Boolean underlined) {
+	@Nonnull
+	public MinecraftText setUnderlined(@Nullable Boolean underlined) {
 		this.underlined = underlined;
+		return this;
 	}
 
 	/**
@@ -376,9 +600,12 @@ public abstract class MinecraftText {
 	 *            {@code true} if this text should be striked through,
 	 *            {@code false} otherwise. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setStrikethrough(@Nullable Boolean strikethrough) {
+	@Nonnull
+	public MinecraftText setStrikethrough(@Nullable Boolean strikethrough) {
 		this.strikethrough = strikethrough;
+		return this;
 	}
 
 	/**
@@ -399,9 +626,12 @@ public abstract class MinecraftText {
 	 *            {@code true} if this text should be obfuscated, {@code false}
 	 *            otherwise. May be {@code null} to have the parameter left
 	 *            absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setObfuscated(@Nullable Boolean obfuscated) {
+	@Nonnull
+	public MinecraftText setObfuscated(@Nullable Boolean obfuscated) {
 		this.obfuscated = obfuscated;
+		return this;
 	}
 
 	/**
@@ -425,9 +655,12 @@ public abstract class MinecraftText {
 	 * @param insertion
 	 *            the text to insert when shift clicked. May be {@code null} to
 	 *            have the parameter left absent from the encoded JSON.
+	 * @return this text.
 	 */
-	public void setInsertion(@Nullable String insertion) {
+	@Nonnull
+	public MinecraftText setInsertion(@Nullable String insertion) {
 		this.insertion = insertion;
+		return this;
 	}
 
 	/**
@@ -453,6 +686,18 @@ public abstract class MinecraftText {
 	}
 
 	/**
+	 * Returns if this text has the given event.
+	 * 
+	 * @param event
+	 *            the event.
+	 * @return {@code true} if this text has {@code event}, {@code false}
+	 *         otherwise.
+	 */
+	public boolean hasEvent(@Nullable TextEvent event) {
+		return events.containsValue(event);
+	}
+
+	/**
 	 * Returns the text events.
 	 * 
 	 * @return the text events.
@@ -473,10 +718,13 @@ public abstract class MinecraftText {
 	 *            the text event.
 	 * @throws NullPointerException
 	 *             if {@code event} is {@code null}.
+	 * @return this text.
 	 */
-	public void addEvent(@Nonnull TextEvent event) {
+	@Nonnull
+	public MinecraftText addEvent(@Nonnull TextEvent event) {
 		Objects.requireNonNull(event, "event");
 		events.put(event.getType(), event);
+		return this;
 	}
 
 	/**
@@ -484,22 +732,14 @@ public abstract class MinecraftText {
 	 * 
 	 * @param event
 	 *            the text event.
+	 * @return this text.
 	 */
-	public void removeEvent(@Nullable TextEvent event) {
+	@Nonnull
+	public MinecraftText removeEvent(@Nullable TextEvent event) {
 		if (event != null) {
 			events.remove(event.getType(), event);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return this.toString().hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		String objStr = Objects.toString(obj);
-		return Objects.equals(objStr, this.toString());
+		return this;
 	}
 
 	/**
@@ -525,8 +765,14 @@ public abstract class MinecraftText {
 	public JsonObject toJson() {
 		JsonObject json = new JsonObject();
 		json.add(type, this.encodeContent());
-		if (!extra.isEmpty()) {
-			/* TODO */
+
+		List<Node<MinecraftText>> children = extra.getChildren();
+		if (!children.isEmpty()) {
+			JsonArray extraJson = new JsonArray();
+			for (Node<MinecraftText> child : children) {
+				extraJson.add(child.getData().toJson());
+			}
+			json.add("extra", extraJson);
 		}
 
 		json.addProperty("color", color);
@@ -542,6 +788,17 @@ public abstract class MinecraftText {
 			json.add(event.getType(), event.toJson());
 		}
 		return json;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		String objStr = Objects.toString(obj);
+		return Objects.equals(objStr, this.toString());
 	}
 
 	@Override

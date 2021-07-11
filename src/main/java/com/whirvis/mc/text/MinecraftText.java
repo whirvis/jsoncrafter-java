@@ -42,7 +42,7 @@ public abstract class MinecraftText {
 	 * objects will serialize null values by default.
 	 */
 	public static final Gson GSON = new GsonBuilder().create();
-	
+
 	/**
 	 * Takes in a value and returns it, unless it is {@code null}. In which
 	 * case, a given fallback value is returned instead.
@@ -146,7 +146,91 @@ public abstract class MinecraftText {
 		}
 		throw new IllegalArgumentException("unsupported type");
 	}
-	
+
+	/**
+	 * Takes given values and concatenates their contents into a single string.
+	 * 
+	 * @param delimiter
+	 *            the delimeter between values, may be {@code null}.
+	 * @param values
+	 *            the values whose contents to string together, {@code null}
+	 *            values will be ignored. All values will be converted to
+	 *            instances of {@code MinecraftText} via
+	 *            {@link #persuade(Object)}.
+	 * @return the concatenated contents of {@code values}.
+	 */
+	@Nullable
+	public static String getContents(@Nullable String delimiter,
+			@Nullable Iterable<?> values) {
+		if (values == null) {
+			return null;
+		}
+		StringBuilder contentsStr = new StringBuilder();
+		Iterator<?> valuesI = values.iterator();
+		while (valuesI.hasNext()) {
+			MinecraftText text = persuade(valuesI.next());
+			if (text == null) {
+				continue;
+			}
+
+			String content = text.getContent().toString();
+			contentsStr.append(content);
+			if (valuesI.hasNext() && delimiter != null) {
+				contentsStr.append(delimiter);
+			}
+		}
+		return contentsStr.toString();
+	}
+
+	/**
+	 * Takes given values and concatenates their contents into a single string.
+	 * 
+	 * @param values
+	 *            the values whose contents to string together, {@code null}
+	 *            values will be ignored. All values will be converted to
+	 *            instances of {@code MinecraftText} via
+	 *            {@link #persuade(Object)}.
+	 * @return the concatenated contents of {@code values}.
+	 */
+	@Nullable
+	public static String getContents(@Nullable Iterable<?> values) {
+		return getContents(null, values);
+	}
+
+	/**
+	 * Takes given values and concatenates their contents into a single string.
+	 * 
+	 * @param delimiter
+	 *            the delimeter between values, may be {@code null}.
+	 * @param values
+	 *            the values whose contents to string together, {@code null}
+	 *            values will be ignored. All values will be converted to
+	 *            instances of {@code MinecraftText} via
+	 *            {@link #persuade(Object)}.
+	 * @return the concatenated contents of {@code values}.
+	 */
+	@Nullable
+	public static String getContents(@Nullable String delimiter,
+			@Nullable Object... values) {
+		return getContents(delimiter,
+				values != null ? Arrays.asList(values) : null);
+	}
+
+	/**
+	 * Takes given values and concatenates their contents into a single string.
+	 * 
+	 * @param values
+	 *            the values whose contents to string together, {@code null}
+	 *            values will be ignored. All values will be converted to
+	 *            instances of {@code MinecraftText} via
+	 *            {@link #persuade(Object)}.
+	 * @return the concatenated contents of {@code values}.
+	 */
+	@Nullable
+	public static String getContents(@Nullable Object... values) {
+		return getContents(null, values);
+	}
+
 	/**
 	 * Converts an array of values into a Minecraft JSON array, accounting for
 	 * the fact there may only one or multiple.
@@ -191,7 +275,7 @@ public abstract class MinecraftText {
 	public static JsonArray toJson(@Nullable Object... texts) {
 		return toJson(texts != null ? Arrays.asList(texts) : null);
 	}
-	
+
 	/**
 	 * Converts an array of values into a Minecraft JSON string, accounting for
 	 * the fact there may only one or multiple.

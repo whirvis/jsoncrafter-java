@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Minecraft Text for Java</name>
-	<description>An API to generate text for Minecraft: Java Edition</description>
+	<description>A library for generating JSON text for Minecraft: Java Edition.</description>
 	<url>https://github.com/whirvis/mc-text-java</url>
 	<inceptionYear>2021</inceptionYear>
 

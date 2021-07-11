@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.event.hover;
+package com.whirvis.mc.text.java.event.hover;
 
 import java.util.Objects;
 

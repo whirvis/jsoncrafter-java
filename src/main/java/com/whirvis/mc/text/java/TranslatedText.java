@@ -1,4 +1,4 @@
-package com.whirvis.mc.text;
+package com.whirvis.mc.text.java;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

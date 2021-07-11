@@ -1,4 +1,4 @@
-package com.whirvis.mc.text;
+package com.whirvis.mc.text.java;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.whirvis.mc.text.event.TextEvent;
+import com.whirvis.mc.text.java.event.TextEvent;
 
 /**
  * A container for text formatted using the
@@ -331,8 +331,8 @@ public abstract class MinecraftText {
 	 * 
 	 * @param type
 	 *            the content type of this text.
-	 * @param json
-	 *            the JSON to operate on.
+	 * @param content
+	 *            the content of this text.
 	 * @throws NullPointerException
 	 *             if {@code type} or {@code content} are {@code null}.
 	 */

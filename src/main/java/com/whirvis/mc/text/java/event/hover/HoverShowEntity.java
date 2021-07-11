@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.event.hover;
+package com.whirvis.mc.text.java.event.hover;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-import com.whirvis.mc.text.MinecraftText;
+import com.whirvis.mc.text.java.MinecraftText;
 
 /**
  * The show entity action, which shows an entity to the player.
@@ -76,7 +76,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @param type
 	 *            the entity type. May be {@code null} to have the parameter
 	 *            left absent from the encoded JSON.
-	 * @param id
+	 * @param uuid
 	 *            the entity UUID string.
 	 * @throws NullPointerException
 	 *             if {@code uuid} is {@code null}.
@@ -97,7 +97,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @param type
 	 *            the entity type. May be {@code null} to have the parameter
 	 *            left absent from the encoded JSON.
-	 * @param id
+	 * @param uuid
 	 *            the entity UUID string.
 	 * @throws NullPointerException
 	 *             if {@code uuid} is {@code null}.
@@ -111,7 +111,7 @@ public class HoverShowEntity extends HoverAction {
 	/**
 	 * Constructs a new {@code HoverShowEntity}.
 	 * 
-	 * @param id
+	 * @param uuid
 	 *            the entity UUID string.
 	 * @throws NullPointerException
 	 *             if {@code uuid} is {@code null}.

@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.event;
+package com.whirvis.mc.text.java.event;
 
 import java.net.MalformedURLException;
 import java.net.URL;

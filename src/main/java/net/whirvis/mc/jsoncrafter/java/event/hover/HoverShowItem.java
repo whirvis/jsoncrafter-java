@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import net.whirvis.mc.jsoncrafter.java.MinecraftText;
+import net.whirvis.mc.jsoncrafter.java.RichText;
 
 /**
  * The show item action, which shows an item stack to the player.
@@ -78,7 +78,7 @@ public class HoverShowItem extends HoverAction {
 	 */
 	@Nonnull
 	public String getId() {
-		return MinecraftText.nullFallback(id, "minecraft:air");
+		return RichText.nullFallback(id, "minecraft:air");
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class HoverShowItem extends HoverAction {
 	 * @return the item stack count.
 	 */
 	public int getCount() {
-		return MinecraftText.nullFallback(count, 1);
+		return RichText.nullFallback(count, 1);
 	}
 
 	/**

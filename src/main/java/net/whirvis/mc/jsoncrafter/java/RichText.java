@@ -40,7 +40,7 @@ import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
  * @see TranslatedText
  * @see KeybindText
  */
-public abstract class MinecraftText {
+public abstract class RichText {
 
 	/*
 	 * We're required to create our own GSON instance stop null values from
@@ -69,8 +69,8 @@ public abstract class MinecraftText {
 	/**
 	 * Persuades a value into a Minecraft text object.
 	 * <p>
-	 * If it is already an instance of {@code MinecraftText}, it is simply
-	 * returned. If not, it is converted to {@link PlainText} using
+	 * If it is already an instance of {@code RichText}, it is simply returned.
+	 * If not, it is converted to {@link PlainText} using
 	 * {@link Object#toString()}.
 	 * 
 	 * @param value
@@ -78,11 +78,11 @@ public abstract class MinecraftText {
 	 * @return the persuaded text.
 	 */
 	@Nullable
-	public static MinecraftText persuade(@Nullable Object value) {
+	public static RichText persuade(@Nullable Object value) {
 		if (value == null) {
 			return null;
-		} else if (value instanceof MinecraftText) {
-			return (MinecraftText) value;
+		} else if (value instanceof RichText) {
+			return (RichText) value;
 		}
 		return new PlainText(value);
 	}
@@ -90,8 +90,8 @@ public abstract class MinecraftText {
 	/**
 	 * Persuades the given values into a Minecraft text objects.
 	 * <p>
-	 * If one is already an instance of {@code MinecraftText}, it will be left
-	 * as is. If not, it will be converted to {@link PlainText} using
+	 * If one is already an instance of {@code RichText}, it will be left as is.
+	 * If not, it will be converted to {@link PlainText} using
 	 * {@link Object#toString()}.
 	 * 
 	 * @param values
@@ -99,11 +99,11 @@ public abstract class MinecraftText {
 	 * @return the persuaded text.
 	 */
 	@Nullable
-	public static List<MinecraftText> persuade(@Nullable Iterable<?> values) {
+	public static List<RichText> persuade(@Nullable Iterable<?> values) {
 		if (values == null) {
 			return null;
 		}
-		List<MinecraftText> texts = new ArrayList<>();
+		List<RichText> texts = new ArrayList<>();
 		for (Object value : values) {
 			texts.add(persuade(value));
 		}
@@ -113,8 +113,8 @@ public abstract class MinecraftText {
 	/**
 	 * Persuades the given values into a Minecraft text objects.
 	 * <p>
-	 * If one is already an instance of {@code MinecraftText}, it will be left
-	 * as is. If not, it will be converted to {@link PlainText} using
+	 * If one is already an instance of {@code RichText}, it will be left as is.
+	 * If not, it will be converted to {@link PlainText} using
 	 * {@link Object#toString()}.
 	 * 
 	 * @param values
@@ -122,7 +122,7 @@ public abstract class MinecraftText {
 	 * @return the persuaded text.
 	 */
 	@Nullable
-	public static List<MinecraftText> persuade(@Nullable Object... values) {
+	public static List<RichText> persuade(@Nullable Object... values) {
 		return persuade(values != null ? Arrays.asList(values) : null);
 	}
 
@@ -161,8 +161,7 @@ public abstract class MinecraftText {
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
 	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code MinecraftText} via
-	 *            {@link #persuade(Object)}.
+	 *            instances of {@code RichText} via {@link #persuade(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -174,7 +173,7 @@ public abstract class MinecraftText {
 		StringBuilder contentsStr = new StringBuilder();
 		Iterator<?> valuesI = values.iterator();
 		while (valuesI.hasNext()) {
-			MinecraftText text = persuade(valuesI.next());
+			RichText text = persuade(valuesI.next());
 			if (text == null) {
 				continue;
 			}
@@ -194,8 +193,7 @@ public abstract class MinecraftText {
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
 	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code MinecraftText} via
-	 *            {@link #persuade(Object)}.
+	 *            instances of {@code RichText} via {@link #persuade(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -211,8 +209,7 @@ public abstract class MinecraftText {
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
 	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code MinecraftText} via
-	 *            {@link #persuade(Object)}.
+	 *            instances of {@code RichText} via {@link #persuade(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -228,8 +225,7 @@ public abstract class MinecraftText {
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
 	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code MinecraftText} via
-	 *            {@link #persuade(Object)}.
+	 *            instances of {@code RichText} via {@link #persuade(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -242,9 +238,9 @@ public abstract class MinecraftText {
 	 * the fact there may only one or multiple.
 	 * 
 	 * @param values
-	 *            the values to convert. Values not of instance
-	 *            {@code MinecraftText} will be automatically converted to
-	 *            {@link PlainText} using {@link Object#toString()}.
+	 *            the values to convert. Values not of instance {@code RichText}
+	 *            will be automatically converted to {@link PlainText} using
+	 *            {@link Object#toString()}.
 	 * @return a JSON array string containing all not {@code null} values of
 	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
 	 *         the resulting JSON array would be empty.
@@ -270,9 +266,9 @@ public abstract class MinecraftText {
 	 * the fact there may only one or multiple.
 	 * 
 	 * @param texts
-	 *            the values to convert. Values not of instance
-	 *            {@code MinecraftText} will be automatically converted to
-	 *            {@link PlainText} using {@link Object#toString()}.
+	 *            the values to convert. Values not of instance {@code RichText}
+	 *            will be automatically converted to {@link PlainText} using
+	 *            {@link Object#toString()}.
 	 * @return a JSON array string containing all not {@code null} values of
 	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
 	 *         the resulting JSON array would be empty.
@@ -287,9 +283,9 @@ public abstract class MinecraftText {
 	 * the fact there may only one or multiple.
 	 * 
 	 * @param texts
-	 *            the values to convert. Values not of instance
-	 *            {@code MinecraftText} will be automatically converted to
-	 *            {@link PlainText} using {@link #toString()}.
+	 *            the values to convert. Values not of instance {@code RichText}
+	 *            will be automatically converted to {@link PlainText} using
+	 *            {@link #toString()}.
 	 * @return a JSON array string containing all not {@code null} values of
 	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
 	 *         the resulting JSON array would be empty.
@@ -305,9 +301,9 @@ public abstract class MinecraftText {
 	 * the fact there may only one or multiple.
 	 * 
 	 * @param texts
-	 *            the values to convert. Values not of instance
-	 *            {@code MinecraftText} will be automatically converted to
-	 *            {@link PlainText} using {@link #toString()}.
+	 *            the values to convert. Values not of instance {@code RichText}
+	 *            will be automatically converted to {@link PlainText} using
+	 *            {@link #toString()}.
 	 * @return a JSON array string containing all not {@code null} values of
 	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
 	 *         the resulting JSON array would be empty.
@@ -320,7 +316,7 @@ public abstract class MinecraftText {
 
 	private String type;
 	private Object content;
-	private Node<MinecraftText> extra;
+	private Node<RichText> extra;
 	private String color;
 	private String font;
 	private Boolean bold;
@@ -332,8 +328,8 @@ public abstract class MinecraftText {
 	private HashMap<String, TextEvent> events;
 
 	/**
-	 * Constructs a new instance of {@code MinecraftText} and sets its
-	 * parameters to the in-game default values.
+	 * Constructs a new instance of {@code RichText} and sets its parameters to
+	 * the in-game default values.
 	 * 
 	 * @param type
 	 *            the content type of this text.
@@ -342,7 +338,7 @@ public abstract class MinecraftText {
 	 * @throws NullPointerException
 	 *             if {@code type} or {@code content} are {@code null}.
 	 */
-	public MinecraftText(@Nonnull String type, @Nonnull Object content) {
+	public RichText(@Nonnull String type, @Nonnull Object content) {
 		this.setType(type);
 		this.setContent(content);
 		this.extra = new Node<>(this);
@@ -369,7 +365,7 @@ public abstract class MinecraftText {
 	 *             if {@code type} is {@code null}.
 	 */
 	@Nonnull
-	public MinecraftText setType(@Nonnull String type) {
+	public RichText setType(@Nonnull String type) {
 		this.type = Objects.requireNonNull(type, "type");
 		return this;
 	}
@@ -394,7 +390,7 @@ public abstract class MinecraftText {
 	 *             if {@code content} is {@code null}.
 	 */
 	@Nonnull
-	public MinecraftText setContent(@Nonnull Object content) {
+	public RichText setContent(@Nonnull Object content) {
 		this.content = Objects.requireNonNull(content, "content");
 		return this;
 	}
@@ -405,9 +401,9 @@ public abstract class MinecraftText {
 	 * @return the child text components of this text.
 	 */
 	@Nonnull
-	public List<MinecraftText> getExtra() {
-		List<MinecraftText> extraData = new ArrayList<>();
-		for (Node<MinecraftText> node : extra.getChildren()) {
+	public List<RichText> getExtra() {
+		List<RichText> extraData = new ArrayList<>();
+		for (Node<RichText> node : extra.getChildren()) {
 			extraData.add(node.getData());
 		}
 		return Collections.unmodifiableList(extraData);
@@ -428,9 +424,9 @@ public abstract class MinecraftText {
 	 *             if a child component is {@code this}.
 	 */
 	@Nonnull
-	public MinecraftText addExtra(@Nonnull Iterable<MinecraftText> texts) {
+	public RichText addExtra(@Nonnull Iterable<RichText> texts) {
 		Objects.requireNonNull(texts, "texts");
-		for (MinecraftText text : texts) {
+		for (RichText text : texts) {
 			Objects.requireNonNull(text, "text");
 			extra.addChild(text.extra);
 		}
@@ -452,7 +448,7 @@ public abstract class MinecraftText {
 	 *             if a child component is {@code this}.
 	 */
 	@Nonnull
-	public MinecraftText addExtra(@Nonnull MinecraftText... texts) {
+	public RichText addExtra(@Nonnull RichText... texts) {
 		Objects.requireNonNull(texts, "texts");
 		return this.addExtra(Arrays.asList(texts));
 	}
@@ -465,19 +461,19 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText removeExtra(@Nullable Iterable<MinecraftText> texts) {
+	public RichText removeExtra(@Nullable Iterable<RichText> texts) {
 		if (texts == null) {
 			return this;
 		}
 
 		/* cache values for O(n) rather than O(n^2) */
-		Map<MinecraftText, Node<MinecraftText>> extras = new HashMap<>();
-		for (Node<MinecraftText> node : extra.getChildren()) {
+		Map<RichText, Node<RichText>> extras = new HashMap<>();
+		for (Node<RichText> node : extra.getChildren()) {
 			extras.put(node.getData(), node);
 		}
 
-		for (MinecraftText text : texts) {
-			Node<MinecraftText> node = extras.get(text);
+		for (RichText text : texts) {
+			Node<RichText> node = extras.get(text);
 			if (node != null) {
 				extra.removeChild(node);
 			}
@@ -493,7 +489,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText removeExtra(@Nullable MinecraftText... texts) {
+	public RichText removeExtra(@Nullable RichText... texts) {
 		return this.removeExtra(texts != null ? Arrays.asList(texts) : null);
 	}
 
@@ -503,7 +499,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText clearExtra() {
+	public RichText clearExtra() {
 		extra.removeChildren();
 		return this;
 	}
@@ -530,7 +526,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setColor(@Nullable String color) {
+	public RichText setColor(@Nullable String color) {
 		this.color = color;
 		return this;
 	}
@@ -543,7 +539,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setColor(int rgb) {
+	public RichText setColor(int rgb) {
 		return this.setColor("#" + Integer.toHexString(rgb));
 	}
 
@@ -558,7 +554,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setColor(@Nullable ChatColor color) {
+	public RichText setColor(@Nullable ChatColor color) {
 		if (color == null) {
 			return this.setColor((String) null);
 		} else if (!color.isColor()) {
@@ -588,7 +584,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setFont(@Nullable String font) {
+	public RichText setFont(@Nullable String font) {
 		this.font = font;
 		return this;
 	}
@@ -614,7 +610,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setBold(@Nullable Boolean bold) {
+	public RichText setBold(@Nullable Boolean bold) {
 		this.bold = bold;
 		return this;
 	}
@@ -640,7 +636,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setItalic(@Nullable Boolean italic) {
+	public RichText setItalic(@Nullable Boolean italic) {
 		this.italic = italic;
 		return this;
 	}
@@ -666,7 +662,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setUnderlined(@Nullable Boolean underlined) {
+	public RichText setUnderlined(@Nullable Boolean underlined) {
 		this.underlined = underlined;
 		return this;
 	}
@@ -693,7 +689,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setStrikethrough(@Nullable Boolean strikethrough) {
+	public RichText setStrikethrough(@Nullable Boolean strikethrough) {
 		this.strikethrough = strikethrough;
 		return this;
 	}
@@ -719,7 +715,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setObfuscated(@Nullable Boolean obfuscated) {
+	public RichText setObfuscated(@Nullable Boolean obfuscated) {
 		this.obfuscated = obfuscated;
 		return this;
 	}
@@ -748,7 +744,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText setInsertion(@Nullable String insertion) {
+	public RichText setInsertion(@Nullable String insertion) {
 		this.insertion = insertion;
 		return this;
 	}
@@ -811,7 +807,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText addEvent(@Nonnull TextEvent event) {
+	public RichText addEvent(@Nonnull TextEvent event) {
 		Objects.requireNonNull(event, "event");
 		events.put(event.getType(), event);
 		return this;
@@ -825,7 +821,7 @@ public abstract class MinecraftText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public MinecraftText removeEvent(@Nullable TextEvent event) {
+	public RichText removeEvent(@Nullable TextEvent event) {
 		if (event != null) {
 			events.remove(event.getType(), event);
 		}
@@ -861,10 +857,10 @@ public abstract class MinecraftText {
 		JsonObject json = new JsonObject();
 		json.add(type, this.encodeContent());
 
-		List<Node<MinecraftText>> children = extra.getChildren();
+		List<Node<RichText>> children = extra.getChildren();
 		if (!children.isEmpty()) {
 			JsonArray extraJson = new JsonArray();
-			for (Node<MinecraftText> child : children) {
+			for (Node<RichText> child : children) {
 				extraJson.add(child.getData().toJson());
 			}
 			json.add("extra", extraJson);

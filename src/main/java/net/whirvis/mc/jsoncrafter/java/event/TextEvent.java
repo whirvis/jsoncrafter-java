@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 /**
  * A container for an event that can occur with
- * {@link net.whirvis.mc.jsoncrafter.java.MinecraftText Minecraft} text in-game.
+ * {@link net.whirvis.mc.jsoncrafter.java.RichText Minecraft} text in-game.
  */
 public abstract class TextEvent {
 

@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
  * @see TranslatedText
  * @see KeybindText
  */
-public class PlainText extends MinecraftText {
+public class PlainText extends RichText {
 
 	/**
 	 * Constructs a new instance of {@code PlainText}.

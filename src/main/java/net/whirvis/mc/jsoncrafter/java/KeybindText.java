@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
  * @see PlainText
  * @see TranslatedText
  */
-public class KeybindText extends MinecraftText {
+public class KeybindText extends RichText {
 
 	/**
 	 * Constructs a new instance of {@code KeybindText}.

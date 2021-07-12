@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import net.whirvis.mc.jsoncrafter.java.MinecraftText;
+import net.whirvis.mc.jsoncrafter.java.RichText;
 
 /**
  * The show entity action, which shows an entity to the player.
@@ -156,7 +156,7 @@ public class HoverShowEntity extends HoverAction {
 	 */
 	@Nonnull
 	public String getType() {
-		return MinecraftText.nullFallback(type, "minecraft:pig");
+		return RichText.nullFallback(type, "minecraft:pig");
 	}
 
 	/**

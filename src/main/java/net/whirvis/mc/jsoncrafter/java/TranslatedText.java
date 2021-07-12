@@ -39,7 +39,7 @@ import com.google.gson.JsonObject;
  * @see PlainText
  * @see KeybindText
  */
-public class TranslatedText extends MinecraftText {
+public class TranslatedText extends RichText {
 
 	private Object[] with;
 

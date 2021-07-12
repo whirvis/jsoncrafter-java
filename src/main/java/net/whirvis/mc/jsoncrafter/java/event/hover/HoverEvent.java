@@ -11,7 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.whirvis.mc.jsoncrafter.java.MinecraftText;
+import net.whirvis.mc.jsoncrafter.java.RichText;
 import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
 
 /**
@@ -50,22 +50,22 @@ public class HoverEvent extends TextEvent {
 	 * automatically to update event's action to {@value #SHOW_TEXT}.
 	 * 
 	 * @param values
-	 *            the values to persuade into {@link MinecraftText} objects
-	 *            using {@link MinecraftText#persuade(Object)}, {@code null}
-	 *            values are ignored.
+	 *            the values to persuade into {@link RichText} objects using
+	 *            {@link RichText#persuade(Object)}, {@code null} values are
+	 *            ignored.
 	 * @return this event.
 	 */
 	@Nonnull
 	public HoverEvent show(@Nullable Iterable<?> values) {
 		this.setAction(SHOW_TEXT);
-		List<MinecraftText> texts = new ArrayList<>();
+		List<RichText> texts = new ArrayList<>();
 		for (Object value : values) {
 			if (value != null) {
-				texts.add(MinecraftText.persuade(value));
+				texts.add(RichText.persuade(value));
 			}
 		}
 		this.value = !texts.isEmpty()
-				? texts.toArray(new MinecraftText[texts.size()])
+				? texts.toArray(new RichText[texts.size()])
 				: null;
 		return this;
 	}
@@ -77,9 +77,9 @@ public class HoverEvent extends TextEvent {
 	 * automatically to update event's action to {@value #SHOW_TEXT}.
 	 * 
 	 * @param values
-	 *            the values to persuade into {@link MinecraftText} objects
-	 *            using {@link MinecraftText#persuade(Object)}, {@code null}
-	 *            values are ignored.
+	 *            the values to persuade into {@link RichText} objects using
+	 *            {@link RichText#persuade(Object)}, {@code null} values are
+	 *            ignored.
 	 * @return this event.
 	 */
 	@Nonnull
@@ -108,13 +108,13 @@ public class HoverEvent extends TextEvent {
 	@Override
 	protected void encodeEvent(JsonObject json) {
 		JsonElement contentsJson = null;
-		if (value instanceof MinecraftText[]) {
-			MinecraftText[] texts = (MinecraftText[]) value;
+		if (value instanceof RichText[]) {
+			RichText[] texts = (RichText[]) value;
 			if (texts.length == 1) {
 				contentsJson = texts[0].toJson();
 			} else if (texts.length > 1) {
 				JsonArray textsJson = new JsonArray();
-				for (MinecraftText text : texts) {
+				for (RichText text : texts) {
 					textsJson.add(text.toJson());
 				}
 				contentsJson = textsJson;

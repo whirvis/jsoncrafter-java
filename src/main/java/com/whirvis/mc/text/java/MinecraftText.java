@@ -78,7 +78,7 @@ public abstract class MinecraftText {
 		} else if (value instanceof MinecraftText) {
 			return (MinecraftText) value;
 		}
-		return new PlainText(value.toString());
+		return new PlainText(value);
 	}
 
 	/**

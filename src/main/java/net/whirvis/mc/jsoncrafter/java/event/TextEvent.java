@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java.event;
+package net.whirvis.mc.jsoncrafter.java.event;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 /**
  * A container for an event that can occur with
- * {@link com.whirvis.mc.text.java.MinecraftText Minecraft} text in-game.
+ * {@link net.whirvis.mc.jsoncrafter.java.MinecraftText Minecraft} text in-game.
  */
 public abstract class TextEvent {
 

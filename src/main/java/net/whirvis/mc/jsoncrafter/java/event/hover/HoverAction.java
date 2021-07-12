@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java.event.hover;
+package net.whirvis.mc.jsoncrafter.java.event.hover;
 
 import java.util.Objects;
 

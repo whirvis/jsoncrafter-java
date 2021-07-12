@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java.event;
+package net.whirvis.mc.jsoncrafter.java.event;
 
 import java.net.MalformedURLException;
 import java.net.URL;

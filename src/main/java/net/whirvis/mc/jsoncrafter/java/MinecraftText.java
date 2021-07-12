@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java;
+package net.whirvis.mc.jsoncrafter.java;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.whirvis.mc.text.java.event.TextEvent;
+
+import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
 
 /**
  * A container for the Raw JSON text format Minecraft uses to send and display

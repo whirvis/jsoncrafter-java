@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java.event.hover;
+package net.whirvis.mc.jsoncrafter.java.event.hover;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -7,7 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-import com.whirvis.mc.text.java.MinecraftText;
+
+import net.whirvis.mc.jsoncrafter.java.MinecraftText;
 
 /**
  * The show entity action, which shows an entity to the player.

@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java.event.hover;
+package net.whirvis.mc.jsoncrafter.java.event.hover;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,9 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.whirvis.mc.text.java.MinecraftText;
-import com.whirvis.mc.text.java.event.TextEvent;
+
+import net.whirvis.mc.jsoncrafter.java.MinecraftText;
+import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
 
 /**
  * A container for a text hover event.

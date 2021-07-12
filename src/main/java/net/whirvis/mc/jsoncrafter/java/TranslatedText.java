@@ -1,4 +1,4 @@
-package com.whirvis.mc.text.java;
+package net.whirvis.mc.jsoncrafter.java;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

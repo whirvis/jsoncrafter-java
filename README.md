@@ -2,6 +2,8 @@
  <a href="#"><img src="https://user-images.githubusercontent.com/5157755/125183780-d6f06480-e1de-11eb-8e99-924f6a566a1e.png"></a>
 </p>
 
+![Minecraft edition](https://user-images.githubusercontent.com/5157755/125366926-c81fc400-e33c-11eb-89b2-6ffcba67267e.png)
+
 [![License](https://img.shields.io/github/license/whirvis/mc-text-java)](https://choosealicense.com/licenses/mit/)
 [![Java version](https://img.shields.io/badge/version-8-orange?style=flat&logo=java)](#)
 [![Repo size](https://img.shields.io/github/repo-size/whirvis/mc-text-java)](#)

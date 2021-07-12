@@ -7,7 +7,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 /**
- * A container for translated Minecraft text.
+ * Displays a translated piece of text from the currently selected language.
+ * This uses the client's selected language, so if players with their games set
+ * to different languages are logged into the same server, each will see the
+ * component in their own language.
  * <p>
  * Translated text works by specifying a translation key (which can be found in
  * the game's JSON language files), and then specifying "with" values. These are
@@ -17,6 +20,9 @@ import com.google.gson.JsonObject;
  * {@code [Player] joined the game}. The raw JSON text of this message in
  * English is {@code %s joined the game}. By setting the "with" value to
  * {@code Whirvis}, the output becomes: {@code Whirvis joined the game}.
+ * Depending on the client language, the message could also be:
+ * {@code Whirvis a rejoint la partie},
+ * {@code Whirvis se ha unido a la partida}, etc.
  * <p>
  * We can accomplish translation with the following code:
  * 
@@ -26,9 +32,9 @@ import com.google.gson.JsonObject;
  * System.out.println(text.toString());
  * </pre>
  * 
- * Depending on the client language, the message could be:
- * {@code "Whirvis joined the game"}, {@code "Whirvis a rejoint la partie"},
- * {@code "Whirvis se ha unido a la partida"}, etc.
+ * More info on translations can be found on the <a href=
+ * "https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Translated_Text">Minecraft
+ * Wiki</a>.
  * 
  * @see PlainText
  * @see KeybindText

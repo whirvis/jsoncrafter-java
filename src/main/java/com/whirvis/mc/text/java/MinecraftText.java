@@ -26,9 +26,14 @@ import com.google.gson.JsonPrimitive;
 import com.whirvis.mc.text.java.event.TextEvent;
 
 /**
- * A container for text formatted using the
+ * A container for the Raw JSON text format Minecraft uses to send and display
+ * rich text to players. It can also be sent by players themselves using
+ * commands and data packs. Raw JSON text is written in JSON, a human-readable
+ * data format.
+ * <p>
+ * More info on Raw JSON text can be found on the
  * <a href="https://minecraft.fandom.com/wiki/Raw_JSON_text_format">Minecraft
- * raw JSON text format</a>.
+ * Wiki</a>.
  *
  * @see PlainText
  * @see TranslatedText
@@ -842,6 +847,11 @@ public abstract class MinecraftText {
 
 	/**
 	 * Converts this text to JSON.
+	 * <p>
+	 * Take care in that {@code null} values are serialized by instances of
+	 * {@link JsonObject} by default. To ensure {@code null} values are not
+	 * serialized when converted to a string, use {@link #toString()} or
+	 * {@link #GSON}.
 	 * 
 	 * @return the encoded JSON.
 	 */

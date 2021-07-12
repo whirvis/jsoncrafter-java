@@ -17,7 +17,7 @@ There is **no** guarantee it will work with *Minecraft: Bedrock Edition*. A Bedr
 This API was created to aid the development of [Discraft](https://github.com/whirvis/discraft).
 As such, it is missing some components present in the Minecraft Raw JSON text API.
 This is due to the fact that mostly only needed components were implemented, so as to save time.
-If requested, these features will be added in the future.
+If requested, these missing features will be added in the future.
 
 # Documentation Notice
 Some documentation found in this API is taken straight from the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).

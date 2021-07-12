@@ -1,7 +1,5 @@
-<p align="center">
- <a href="#"><img src="https://user-images.githubusercontent.com/5157755/125183780-d6f06480-e1de-11eb-8e99-924f6a566a1e.png"></a>
-</p>
-
+<!-- Font: Minecraft Evenings, found at: https://www.fontspace.com/minecraft-evenings-font-f17735 -->
+![JSONcrafter logo](https://user-images.githubusercontent.com/5157755/125183780-d6f06480-e1de-11eb-8e99-924f6a566a1e.png)
 ![Minecraft edition](https://user-images.githubusercontent.com/5157755/125366926-c81fc400-e33c-11eb-89b2-6ffcba67267e.png)
 
 [![License](https://img.shields.io/github/license/whirvis/mc-text-java)](https://choosealicense.com/licenses/mit/)

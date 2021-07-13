@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.whirvis</groupId>
 	<artifactId>mc.jsoncrafter.java</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-BETA</version>
 
 	<name>JSONcrafter Java</name>
 	<description>A library for generating JSON text for Minecraft: Java Edition.</description>

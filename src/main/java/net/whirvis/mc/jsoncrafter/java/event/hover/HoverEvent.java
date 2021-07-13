@@ -1,6 +1,5 @@
 package net.whirvis.mc.jsoncrafter.java.event.hover;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +14,12 @@ import net.whirvis.mc.jsoncrafter.java.RichText;
 import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
 
 /**
- * A container for a text hover event.
+ * Allows for a tooltip to be displayed when the player hovers their mouse over
+ * text.
+ * <p>
+ * More information on hover events can be found on the <a href=
+ * "https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Java_Edition">Minecraft
+ * Wiki</a>.
  */
 public class HoverEvent extends TextEvent {
 
@@ -39,74 +43,71 @@ public class HoverEvent extends TextEvent {
 			case SHOW_ITEM:
 			case SHOW_ENTITY:
 				return true;
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	/**
-	 * Sets the text that will be shown.
+	 * Sets the tooltip text that will be shown.
 	 * <p>
 	 * The appropriate call to {@link #setAction(String)} will be called
 	 * automatically to update event's action to {@value #SHOW_TEXT}.
 	 * 
 	 * @param values
-	 *            the values to persuade into {@link RichText} objects using
-	 *            {@link RichText#persuade(Object)}, {@code null} values are
-	 *            ignored.
+	 *            the text to show in the tooltip, {@code null} values are
+	 *            ignored. Values are persuaded into rich text via
+	 *            {@link RichText#persuade(Object)}.
 	 * @return this event.
 	 */
 	@Nonnull
 	public HoverEvent show(@Nullable Iterable<?> values) {
 		this.setAction(SHOW_TEXT);
-		List<RichText> texts = new ArrayList<>();
-		for (Object value : values) {
-			if (value != null) {
-				texts.add(RichText.persuade(value));
-			}
-		}
-		this.value = !texts.isEmpty()
-				? texts.toArray(new RichText[texts.size()])
-				: null;
+		List<RichText> texts = RichText.persuade(values);
+		this.value = !texts.isEmpty() ? (RichText[]) texts.toArray() : null;
 		return this;
 	}
 
 	/**
-	 * Sets the text that will be shown.
+	 * Sets the tooltip text that will be shown.
 	 * <p>
 	 * The appropriate call to {@link #setAction(String)} will be called
 	 * automatically to update event's action to {@value #SHOW_TEXT}.
+	 * <p>
+	 * This method is a shorthand for {@link #show(Iterable)}, with
+	 * {@code values} being converted to a list.
 	 * 
 	 * @param values
-	 *            the values to persuade into {@link RichText} objects using
-	 *            {@link RichText#persuade(Object)}, {@code null} values are
-	 *            ignored.
+	 *            the text to show in the tooltip, {@code null} values are
+	 *            ignored. Values are persuaded into rich text via
+	 *            {@link RichText#persuade(Object)}.
 	 * @return this event.
 	 */
 	@Nonnull
-	public HoverEvent show(@Nullable Object... values) {
+	public final HoverEvent show(@Nullable Object... values) {
 		return this.show(values != null ? Arrays.asList(values) : null);
 	}
 
 	/**
-	 * Sets what will be shown.
+	 * Sets the tooltip that will be shown.
 	 * <p>
 	 * The appropriate call to {@link #setAction(String)} will be called for
-	 * {@code action} automatically, based on the value it returns for
-	 * {@link HoverAction#getAction()}.
+	 * {@code tooltip} automatically, based on the value it returns for
+	 * {@link HoverTooltip#getAction()}.
 	 * 
-	 * @param action
-	 *            the action to perform.
+	 * @param tooltip
+	 *            the tooltip to show.
 	 * @return this event.
 	 */
 	@Nonnull
-	public HoverEvent show(@Nullable HoverAction action) {
-		this.setAction(action.getAction());
-		this.value = action;
+	public HoverEvent show(@Nullable HoverTooltip tooltip) {
+		this.setAction(tooltip.getAction());
+		this.value = tooltip;
 		return this;
 	}
 
 	@Override
-	protected void encodeEvent(JsonObject json) {
+	protected void serializeEvent(JsonObject json) {
 		JsonElement contentsJson = null;
 		if (value instanceof RichText[]) {
 			RichText[] texts = (RichText[]) value;
@@ -119,8 +120,8 @@ public class HoverEvent extends TextEvent {
 				}
 				contentsJson = textsJson;
 			}
-		} else if (value instanceof HoverAction) {
-			contentsJson = ((HoverAction) value).toJson();
+		} else if (value instanceof HoverTooltip) {
+			contentsJson = ((HoverTooltip) value).toJson();
 		}
 		json.add("contents", contentsJson);
 	}

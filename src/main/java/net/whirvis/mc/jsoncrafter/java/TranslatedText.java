@@ -24,6 +24,11 @@ import com.google.gson.JsonObject;
  * {@code Whirvis a rejoint la partie},
  * {@code Whirvis se ha unido a la partida}, etc.
  * <p>
+ * Regular text can also be used in place of a translation key. Shall a
+ * translation key be absent from Minecraft's current language file, it will be
+ * displayed as given. When this happens, format specifiers (such as {@code %s})
+ * are still functional.
+ * <p>
  * We can accomplish translation with the following code:
  * 
  * <pre>
@@ -49,8 +54,8 @@ public class TranslatedText extends RichText {
 	 * @param translate
 	 *            the translation key.
 	 * @param with
-	 *            the parameters to format this text with. Values will be
-	 *            converted to JSON via {@link #toJsonElement(Object)}.
+	 *            the parameters to format this text with, must be serializable
+	 *            to JSON.
 	 * @throws NullPointerException
 	 *             if {@code translate} is {@code null}.
 	 */
@@ -63,8 +68,8 @@ public class TranslatedText extends RichText {
 	 * Sets the parameters to format this text with.
 	 * 
 	 * @param with
-	 *            the parameters to format this text with. Values will be
-	 *            converted to JSON via {@link #toJsonElement(Object)}.
+	 *            the parameters to format this text with, must be serializable
+	 *            to JSON.
 	 * @return this text.
 	 */
 	@Nonnull
@@ -75,15 +80,19 @@ public class TranslatedText extends RichText {
 
 	/**
 	 * Sets the translation of this text.
+	 * <p>
+	 * This method is a shorthand for {@link #setContent(Object)} and
+	 * {@link #setWith(Object...)}, with {@code translate} being set to the
+	 * content of this text.
 	 * 
 	 * @param translate
 	 *            the translation key.
 	 * @param with
-	 *            the parameters to format this text with. Values will be
-	 *            converted to JSON via {@link #toJsonElement(Object)}.
+	 *            the parameters to format this text with, must be serializable
+	 *            to JSON.
 	 * @return this text.
 	 */
-	public TranslatedText setTranslation(@Nullable String translate,
+	public final TranslatedText setTranslation(@Nullable String translate,
 			@Nullable Object... with) {
 		this.setContent(translate);
 		this.setWith(with);
@@ -91,18 +100,15 @@ public class TranslatedText extends RichText {
 	}
 
 	@Override
-	public JsonObject toJson() {
-		JsonObject json = super.toJson();
+	protected void serializeText(JsonObject json) {
 		if (with == null || with.length <= 0) {
-			return json;
+			return;
 		}
-
 		JsonArray jsonWith = new JsonArray();
 		for (int i = 0; i < with.length; i++) {
-			jsonWith.add(toJsonElement(with[i]));
+			jsonWith.add(GSON.toJsonTree(with[i]));
 		}
 		json.add("with", jsonWith);
-		return json;
 	}
 
 }

@@ -11,7 +11,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 /**
- * A container for a text click event.
+ * Allows for events to occur when the player clicks on text. This only works in
+ * chat messages and written books, unless specified otherwise.
+ * <p>
+ * More information on click events can be found on the <a href=
+ * "https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Java_Edition">Minecraft
+ * Wiki</a>.
  */
 public class ClickEvent extends TextEvent {
 
@@ -51,8 +56,9 @@ public class ClickEvent extends TextEvent {
 			case CHANGE_PAGE:
 			case COPY_TO_CLIPBOARD:
 				return true;
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	/**
@@ -115,6 +121,9 @@ public class ClickEvent extends TextEvent {
 
 	/**
 	 * Sets the URL that will be opened.
+	 * <p>
+	 * This method is a shorthand for {@link #setURL(URL)}, with {@code url}
+	 * being parsed into a URL.
 	 * 
 	 * @param url
 	 *            the URL, may be {@code null} for no URL.
@@ -123,7 +132,7 @@ public class ClickEvent extends TextEvent {
 	 *             if {@code url} is malformed.
 	 */
 	@Nonnull
-	public ClickEvent setURL(@Nullable String url) {
+	public final ClickEvent setURL(@Nullable String url) {
 		try {
 			return this.setURL(new URL(url));
 		} catch (MalformedURLException e) {
@@ -165,7 +174,7 @@ public class ClickEvent extends TextEvent {
 	}
 
 	@Override
-	protected void encodeEvent(JsonObject json) {
+	protected void serializeEvent(JsonObject json) {
 		JsonElement valueJson = null;
 		if (value instanceof String) {
 			valueJson = new JsonPrimitive((String) value);

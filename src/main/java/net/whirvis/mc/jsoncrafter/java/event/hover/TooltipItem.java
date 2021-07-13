@@ -8,9 +8,9 @@ import com.google.gson.JsonObject;
 import net.whirvis.mc.jsoncrafter.java.RichText;
 
 /**
- * The show item action, which shows an item stack to the player.
+ * Shows an item stack to the player when they hover their mouse over text.
  */
-public class HoverShowItem extends HoverAction {
+public class TooltipItem extends HoverTooltip {
 
 	private String id;
 	private Integer count;
@@ -29,7 +29,7 @@ public class HoverShowItem extends HoverAction {
 	 *            the item NBT tag string. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
 	 */
-	public HoverShowItem(@Nullable String id, @Nullable Integer count,
+	public TooltipItem(@Nullable String id, @Nullable Integer count,
 			@Nullable String tag) {
 		super(HoverEvent.SHOW_ITEM);
 		this.setId(id);
@@ -47,7 +47,7 @@ public class HoverShowItem extends HoverAction {
 	 *            the item stack count. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
 	 */
-	public HoverShowItem(@Nullable String id, @Nullable Integer count) {
+	public TooltipItem(@Nullable String id, @Nullable Integer count) {
 		this(id, count, null);
 	}
 
@@ -58,14 +58,14 @@ public class HoverShowItem extends HoverAction {
 	 *            the namespaced item ID. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
 	 */
-	public HoverShowItem(@Nullable String id) {
+	public TooltipItem(@Nullable String id) {
 		this(id, null, null);
 	}
 
 	/**
 	 * Constructs a new {@code HoverShowItem}.
 	 */
-	public HoverShowItem() {
+	public TooltipItem() {
 		this(null, null, null);
 	}
 
@@ -87,10 +87,10 @@ public class HoverShowItem extends HoverAction {
 	 * @param id
 	 *            the item namespace ID. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
-	 * @return this hover action.
+	 * @return this tooltip.
 	 */
 	@Nonnull
-	public HoverShowItem setId(@Nullable String id) {
+	public TooltipItem setId(@Nullable String id) {
 		this.id = id;
 		return this;
 	}
@@ -112,10 +112,10 @@ public class HoverShowItem extends HoverAction {
 	 * @param count
 	 *            the item stack count. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
-	 * @return this hover action.
+	 * @return this tooltip.
 	 */
 	@Nonnull
-	public HoverShowItem setCount(@Nullable Integer count) {
+	public TooltipItem setCount(@Nullable Integer count) {
 		this.count = count;
 		return this;
 	}
@@ -136,10 +136,10 @@ public class HoverShowItem extends HoverAction {
 	 * @param tag
 	 *            the item NBT tag string. May be {@code null} to have the
 	 *            parameter left absent from the encoded JSON.
-	 * @return this hover action.
+	 * @return this tooltip.
 	 */
 	@Nonnull
-	public HoverShowItem setTag(@Nullable String tag) {
+	public TooltipItem setTag(@Nullable String tag) {
 		this.tag = tag;
 		return this;
 	}

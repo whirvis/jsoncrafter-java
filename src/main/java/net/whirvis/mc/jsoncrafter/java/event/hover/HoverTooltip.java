@@ -7,9 +7,9 @@ import javax.annotation.Nonnull;
 import com.google.gson.JsonObject;
 
 /**
- * A container for data of a {@link HoverEvent} action.
+ * A tooltip shown to the player.
  */
-public abstract class HoverAction {
+public abstract class HoverTooltip {
 
 	private final String action;
 
@@ -21,7 +21,7 @@ public abstract class HoverAction {
 	 * @throws NullPointerException
 	 *             if {@code action} is {@code null}.
 	 */
-	public HoverAction(@Nonnull String action) {
+	public HoverTooltip(@Nonnull String action) {
 		this.action = Objects.requireNonNull(action, "action");
 	}
 
@@ -36,7 +36,7 @@ public abstract class HoverAction {
 	}
 
 	/**
-	 * Converts this hover action to JSON.
+	 * Serializes the tooltip.
 	 * 
 	 * @return the encoded JSON.
 	 */

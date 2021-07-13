@@ -5,14 +5,27 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
+
+import net.whirvis.mc.jsoncrafter.java.RichText;
 
 /**
- * A container for an event that can occur with
- * {@link net.whirvis.mc.jsoncrafter.java.RichText Minecraft} text in-game.
+ * Allows for events to occur when the player interacts with text.
+ * <p>
+ * More information on events can be found on the <a href=
+ * "https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Java_Edition">Minecraft
+ * Wiki</a>.
  */
 public abstract class TextEvent {
+
+	/**
+	 * Wrapper lambda to make {@code TextEvent} and its children function with
+	 * GSON type hierarchy adapters. To convert an instance of {@code TextEvent}
+	 * to JSON without GSON, use {@link RichText#toJson()}.
+	 */
+	public static final JsonSerializer<TextEvent> SERIALIZER =
+			(src, type, ctx) -> src.toJson();
 
 	private final String type;
 	private String action;
@@ -51,7 +64,7 @@ public abstract class TextEvent {
 	 * @return the event type name.
 	 */
 	@Nonnull
-	public String getType() {
+	public final String getType() {
 		return this.type;
 	}
 
@@ -94,25 +107,22 @@ public abstract class TextEvent {
 	}
 
 	/**
-	 * Encodes this event.
+	 * Serializes the event.
 	 * 
 	 * @param json
 	 *            the JSON to encode to.
 	 */
-	protected abstract void encodeEvent(JsonObject json);
+	protected abstract void serializeEvent(JsonObject json);
 
 	/**
-	 * Converts this event to JSON.
+	 * Serializes the event into JSON.
 	 * 
 	 * @return the encoded JSON.
 	 */
-	@Nonnull
-	public JsonElement toJson() {
+	public final JsonObject toJson() {
 		JsonObject json = new JsonObject();
-		if (action != null) {
-			json.addProperty("action", action);
-		}
-		this.encodeEvent(json);
+		json.addProperty("action", action);
+		this.serializeEvent(json);
 		return json;
 	}
 

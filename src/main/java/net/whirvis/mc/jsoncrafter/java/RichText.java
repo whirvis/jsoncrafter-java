@@ -20,9 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
 import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
 
@@ -40,14 +39,25 @@ import net.whirvis.mc.jsoncrafter.java.event.TextEvent;
  * @see TranslatedText
  * @see KeybindText
  */
-public abstract class RichText {
+public class RichText {
+
+	/**
+	 * Wrapper lambda to make {@code RichText} and its children function with
+	 * GSON type hierarchy adapters. To convert an instance of {@code RichText}
+	 * to JSON without GSON, use {@link RichText#toJson()}.
+	 */
+	public static final JsonSerializer<RichText> SERIALIZER =
+			(src, type, ctx) -> src.toJson();
 
 	/*
 	 * We're required to create our own GSON instance stop null values from
 	 * being serialized. For whatever reason, the toString() built into JSON
 	 * objects will serialize null values by default.
 	 */
-	public static final Gson GSON = new GsonBuilder().create();
+	public static Gson GSON = new GsonBuilder()
+			.registerTypeHierarchyAdapter(RichText.class, RichText.SERIALIZER)
+			.registerTypeHierarchyAdapter(TextEvent.class, TextEvent.SERIALIZER)
+			.create();
 
 	/**
 	 * Takes in a value and returns it, unless it is {@code null}. In which
@@ -67,11 +77,10 @@ public abstract class RichText {
 	}
 
 	/**
-	 * Persuades a value into a Minecraft text object.
+	 * Persuades a value into an instance of {@code RichText}.
 	 * <p>
-	 * If it is already an instance of {@code RichText}, it is simply returned.
-	 * If not, it is converted to {@link PlainText} using
-	 * {@link Object#toString()}.
+	 * Values of instance of {@code RichText} are simply returned.<br>
+	 * Otherwise, they are converted into an instance of {@link PlainText}.
 	 * 
 	 * @param value
 	 *            the value to persuade.
@@ -88,11 +97,10 @@ public abstract class RichText {
 	}
 
 	/**
-	 * Persuades the given values into a Minecraft text objects.
+	 * Persuades the given values into instances of {@code RichText}.
 	 * <p>
-	 * If one is already an instance of {@code RichText}, it will be left as is.
-	 * If not, it will be converted to {@link PlainText} using
-	 * {@link Object#toString()}.
+	 * Values of instance of {@code RichText} are simply returned.<br>
+	 * Otherwise, they are converted into an instance of {@link PlainText}.
 	 * 
 	 * @param values
 	 *            the values to persuade.
@@ -111,11 +119,10 @@ public abstract class RichText {
 	}
 
 	/**
-	 * Persuades the given values into a Minecraft text objects.
+	 * Persuades the given values into instances of {@code RichText}.
 	 * <p>
-	 * If one is already an instance of {@code RichText}, it will be left as is.
-	 * If not, it will be converted to {@link PlainText} using
-	 * {@link Object#toString()}.
+	 * Values of instance of {@code RichText} are simply returned.<br>
+	 * Otherwise, they are converted into an instance of {@link PlainText}.
 	 * 
 	 * @param values
 	 *            the values to persuade.
@@ -127,30 +134,80 @@ public abstract class RichText {
 	}
 
 	/**
-	 * Attempts to convert an object to a {@link JsonElement}.
+	 * Converts an array of values into a rich text JSON array, accounting for
+	 * the fact there may be only one or multiple.
 	 * 
-	 * @param obj
-	 *            the object to convert.
-	 * @return the converted object as a JSON element.
-	 * @throws IllegalArgumentException
-	 *             if {@code obj} is of an unsupported type.
+	 * @param values
+	 *            the values to convert. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
 	 */
-	@Nonnull /* assuming JsonNull doesn't count */
-	protected static JsonElement toJsonElement(@Nullable Object obj) {
-		if (obj == null) {
-			return JsonNull.INSTANCE;
-		} else if (obj instanceof JsonElement) {
-			return (JsonElement) obj;
-		} else if (obj instanceof Boolean) {
-			return new JsonPrimitive((Boolean) obj);
-		} else if (obj instanceof Character) {
-			return new JsonPrimitive((Character) obj);
-		} else if (obj instanceof Number) {
-			return new JsonPrimitive((Number) obj);
-		} else if (obj instanceof String) {
-			return new JsonPrimitive((String) obj);
+	@Nullable
+	public static JsonArray toJson(@Nullable Iterable<?> values) {
+		if (values == null) {
+			return null;
 		}
-		throw new IllegalArgumentException("unsupported type");
+		JsonArray jsonTexts = new JsonArray();
+		Iterator<?> valuesI = values.iterator();
+		while (valuesI.hasNext()) {
+			Object value = valuesI.next();
+			if (value != null) {
+				jsonTexts.add(GSON.toJsonTree(persuade(value)));
+			}
+		}
+		return !jsonTexts.isEmpty() ? jsonTexts : null;
+	}
+
+	/**
+	 * Converts an array of values into a rich text JSON array, accounting for
+	 * the fact there may be only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static JsonArray toJson(@Nullable Object... texts) {
+		return toJson(texts != null ? Arrays.asList(texts) : null);
+	}
+
+	/**
+	 * Converts an array of values into a rich text JSON string, accounting for
+	 * the fact there may be only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static String toString(@Nullable Iterable<?> texts) {
+		JsonElement json = toJson(texts);
+		return json != null ? GSON.toJson(json) : null;
+	}
+
+	/**
+	 * Converts an array of values into a rich text JSON string, accounting for
+	 * the fact there may be only one or multiple.
+	 * 
+	 * @param texts
+	 *            the values to convert. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}.
+	 * @return a JSON array string containing all not {@code null} values of
+	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
+	 *         the resulting JSON array would be empty.
+	 */
+	@Nullable
+	public static String toString(@Nullable Object... texts) {
+		JsonElement json = toJson(texts);
+		return json != null ? GSON.toJson(json) : null;
 	}
 
 	/**
@@ -160,8 +217,9 @@ public abstract class RichText {
 	 *            the delimeter between values, may be {@code null}.
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
-	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code RichText} via {@link #persuade(Object)}.
+	 *            values will be ignored. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}, and converted
+	 *            to strings via {@link Objects#toString(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -178,7 +236,7 @@ public abstract class RichText {
 				continue;
 			}
 
-			String content = text.getContent().toString();
+			String content = Objects.toString(text.getContent());
 			contentsStr.append(content);
 			if (valuesI.hasNext() && delimiter != null) {
 				contentsStr.append(delimiter);
@@ -192,8 +250,9 @@ public abstract class RichText {
 	 * 
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
-	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code RichText} via {@link #persuade(Object)}.
+	 *            values will be ignored. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}, and converted
+	 *            to strings via {@link Objects#toString(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -208,8 +267,9 @@ public abstract class RichText {
 	 *            the delimeter between values, may be {@code null}.
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
-	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code RichText} via {@link #persuade(Object)}.
+	 *            values will be ignored. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}, and converted
+	 *            to strings via {@link Objects#toString(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -224,8 +284,9 @@ public abstract class RichText {
 	 * 
 	 * @param values
 	 *            the values whose contents to string together, {@code null}
-	 *            values will be ignored. All values will be converted to
-	 *            instances of {@code RichText} via {@link #persuade(Object)}.
+	 *            values will be ignored. Values are converted to instances of
+	 *            {@code RichText} via {@link #persuade(Object)}, and converted
+	 *            to strings via {@link Objects#toString(Object)}.
 	 * @return the concatenated contents of {@code values}.
 	 */
 	@Nullable
@@ -233,88 +294,7 @@ public abstract class RichText {
 		return getContents(null, values);
 	}
 
-	/**
-	 * Converts an array of values into a Minecraft JSON array, accounting for
-	 * the fact there may only one or multiple.
-	 * 
-	 * @param values
-	 *            the values to convert. Values not of instance {@code RichText}
-	 *            will be automatically converted to {@link PlainText} using
-	 *            {@link Object#toString()}.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
-	 *         the resulting JSON array would be empty.
-	 */
-	@Nullable
-	public static JsonArray toJson(@Nullable Iterable<?> values) {
-		if (values == null) {
-			return null;
-		}
-		JsonArray jsonTexts = new JsonArray();
-		Iterator<?> valuesI = values.iterator();
-		while (valuesI.hasNext()) {
-			Object value = valuesI.next();
-			if (value != null) {
-				jsonTexts.add(persuade(value).toJson());
-			}
-		}
-		return !jsonTexts.isEmpty() ? jsonTexts : null;
-	}
-
-	/**
-	 * Converts an array of values into a Minecraft JSON array, accounting for
-	 * the fact there may only one or multiple.
-	 * 
-	 * @param texts
-	 *            the values to convert. Values not of instance {@code RichText}
-	 *            will be automatically converted to {@link PlainText} using
-	 *            {@link Object#toString()}.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
-	 *         the resulting JSON array would be empty.
-	 */
-	@Nullable
-	public static JsonArray toJson(@Nullable Object... texts) {
-		return toJson(texts != null ? Arrays.asList(texts) : null);
-	}
-
-	/**
-	 * Converts an array of values into a Minecraft JSON string, accounting for
-	 * the fact there may only one or multiple.
-	 * 
-	 * @param texts
-	 *            the values to convert. Values not of instance {@code RichText}
-	 *            will be automatically converted to {@link PlainText} using
-	 *            {@link #toString()}.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
-	 *         the resulting JSON array would be empty.
-	 */
-	@Nullable
-	public static String toString(@Nullable Iterable<?> texts) {
-		JsonElement json = toJson(texts);
-		return json != null ? GSON.toJson(json) : null;
-	}
-
-	/**
-	 * Converts an array of values into a Minecraft JSON string, accounting for
-	 * the fact there may only one or multiple.
-	 * 
-	 * @param texts
-	 *            the values to convert. Values not of instance {@code RichText}
-	 *            will be automatically converted to {@link PlainText} using
-	 *            {@link #toString()}.
-	 * @return a JSON array string containing all not {@code null} values of
-	 *         {@code texts}, {@code null} if {@code values} is {@code null} or
-	 *         the resulting JSON array would be empty.
-	 */
-	@Nullable
-	public static String toString(@Nullable Object... texts) {
-		JsonElement json = toJson(texts);
-		return json != null ? GSON.toJson(json) : null;
-	}
-
-	private String type;
+	private final String type;
 	private Object content;
 	private Node<RichText> extra;
 	private String color;
@@ -334,12 +314,12 @@ public abstract class RichText {
 	 * @param type
 	 *            the content type of this text.
 	 * @param content
-	 *            the content of this text.
+	 *            the content of this text, must be serializable to JSON.
 	 * @throws NullPointerException
 	 *             if {@code type} or {@code content} are {@code null}.
 	 */
 	public RichText(@Nonnull String type, @Nonnull Object content) {
-		this.setType(type);
+		this.type = type;
 		this.setContent(content);
 		this.extra = new Node<>(this);
 		this.events = new HashMap<>();
@@ -351,23 +331,8 @@ public abstract class RichText {
 	 * @return the content type of this text.
 	 */
 	@Nonnull
-	public String getType() {
+	public final String getType() {
 		return this.type;
-	}
-
-	/**
-	 * Sets the content type of this text.
-	 * 
-	 * @param type
-	 *            the content type.
-	 * @return this text.
-	 * @throws NullPointerException
-	 *             if {@code type} is {@code null}.
-	 */
-	@Nonnull
-	public RichText setType(@Nonnull String type) {
-		this.type = Objects.requireNonNull(type, "type");
-		return this;
 	}
 
 	/**
@@ -384,7 +349,7 @@ public abstract class RichText {
 	 * Sets the content of this text.
 	 * 
 	 * @param content
-	 *            the content.
+	 *            the content, must be serializable to JSON.
 	 * @return this text.
 	 * @throws NullPointerException
 	 *             if {@code content} is {@code null}.
@@ -393,6 +358,16 @@ public abstract class RichText {
 	public RichText setContent(@Nonnull Object content) {
 		this.content = Objects.requireNonNull(content, "content");
 		return this;
+	}
+
+	/**
+	 * Serializes the text.
+	 * 
+	 * @param json
+	 *            the JSON to encode to.
+	 */
+	protected void serializeText(JsonObject json) {
+		/* optional override */
 	}
 
 	/**
@@ -438,6 +413,9 @@ public abstract class RichText {
 	 * <p>
 	 * Child text components inherit all formatting and interactivity from the
 	 * parent component, unless they explicitly override them.
+	 * <p>
+	 * This method is a shorthand for {@link #addExtra(Iterable)}, with
+	 * {@code texts} being converted to a list.
 	 * 
 	 * @param texts
 	 *            the child components.
@@ -448,7 +426,7 @@ public abstract class RichText {
 	 *             if a child component is {@code this}.
 	 */
 	@Nonnull
-	public RichText addExtra(@Nonnull RichText... texts) {
+	public final RichText addExtra(@Nonnull RichText... texts) {
 		Objects.requireNonNull(texts, "texts");
 		return this.addExtra(Arrays.asList(texts));
 	}
@@ -483,13 +461,16 @@ public abstract class RichText {
 
 	/**
 	 * Removes the given child text components from this text.
+	 * <p>
+	 * This method is a shorthand for {@link #removeExtra(Iterable)}, with
+	 * {@code texts} being converted to a list.
 	 * 
 	 * @param texts
 	 *            the child components.
 	 * @return this text.
 	 */
 	@Nonnull
-	public RichText removeExtra(@Nullable RichText... texts) {
+	public final RichText removeExtra(@Nullable RichText... texts) {
 		return this.removeExtra(texts != null ? Arrays.asList(texts) : null);
 	}
 
@@ -533,18 +514,24 @@ public abstract class RichText {
 
 	/**
 	 * Sets the text color.
+	 * <p>
+	 * This method is a shorthand for {@link #setColor(String)}, with
+	 * {@code rgb} being converted to a hex color string.
 	 * 
 	 * @param rgb
 	 *            the RGB color value.
 	 * @return this text.
 	 */
 	@Nonnull
-	public RichText setColor(int rgb) {
+	public final RichText setColor(int rgb) {
 		return this.setColor("#" + Integer.toHexString(rgb));
 	}
 
 	/**
 	 * Sets the text color.
+	 * <p>
+	 * This method is a shorthand for {@link #setColor(String)}, with
+	 * {@code color} converted to its name string set to lowercase.
 	 * 
 	 * @param color
 	 *            the chat color. May be {@code null} to have the parameter left
@@ -554,7 +541,7 @@ public abstract class RichText {
 	 * @return this text.
 	 */
 	@Nonnull
-	public RichText setColor(@Nullable ChatColor color) {
+	public final RichText setColor(@Nullable ChatColor color) {
 		if (color == null) {
 			return this.setColor((String) null);
 		} else if (!color.isColor()) {
@@ -829,39 +816,20 @@ public abstract class RichText {
 	}
 
 	/**
-	 * Encodes the content into a JSON element.
-	 * <p>
-	 * By default, the content of this text will be encoded via the
-	 * {@link #toJsonElement(Object)} method. If the text content is a more
-	 * complex type, the extending class should override this method.
-	 * 
-	 * @return the encoded content.
-	 */
-	@Nonnull
-	public JsonElement encodeContent() {
-		return toJsonElement(content);
-	}
-
-	/**
-	 * Converts this text to JSON.
-	 * <p>
-	 * Take care in that {@code null} values are serialized by instances of
-	 * {@link JsonObject} by default. To ensure {@code null} values are not
-	 * serialized when converted to a string, use {@link #toString()} or
-	 * {@link #GSON}.
+	 * Serializes the text into JSON.
 	 * 
 	 * @return the encoded JSON.
 	 */
-	@Nonnull
-	public JsonObject toJson() {
+	public final JsonObject toJson() {
 		JsonObject json = new JsonObject();
-		json.add(type, this.encodeContent());
+		json.add(type, GSON.toJsonTree(content));
+		this.serializeText(json);
 
 		List<Node<RichText>> children = extra.getChildren();
 		if (!children.isEmpty()) {
 			JsonArray extraJson = new JsonArray();
 			for (Node<RichText> child : children) {
-				extraJson.add(child.getData().toJson());
+				extraJson.add(GSON.toJsonTree(child.getData()));
 			}
 			json.add("extra", extraJson);
 		}
@@ -876,7 +844,7 @@ public abstract class RichText {
 		json.addProperty("insertion", insertion);
 
 		for (TextEvent event : events.values()) {
-			json.add(event.getType(), event.toJson());
+			json.add(event.getType(), GSON.toJsonTree(event));
 		}
 		return json;
 	}
@@ -894,7 +862,7 @@ public abstract class RichText {
 
 	@Override
 	public String toString() {
-		return GSON.toJson(this.toJson());
+		return GSON.toJson(this);
 	}
 
 }

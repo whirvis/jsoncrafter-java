@@ -11,9 +11,9 @@ import com.google.gson.JsonObject;
 import net.whirvis.mc.jsoncrafter.java.RichText;
 
 /**
- * The show entity action, which shows an entity to the player.
+ * Shows an entity to the player when they hover their mouse over text.
  */
-public class HoverShowEntity extends HoverAction {
+public class TooltipEntity extends HoverTooltip {
 
 	private String name;
 	private String type;
@@ -33,7 +33,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	public HoverShowEntity(@Nullable String name, @Nullable String type,
+	public TooltipEntity(@Nullable String name, @Nullable String type,
 			@Nonnull UUID id) {
 		super(HoverEvent.SHOW_ENTITY);
 		this.setName(name);
@@ -52,7 +52,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	public HoverShowEntity(@Nullable String type, @Nonnull UUID id) {
+	public TooltipEntity(@Nullable String type, @Nonnull UUID id) {
 		this(null, type, id);
 	}
 
@@ -64,7 +64,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	public HoverShowEntity(@Nonnull UUID id) {
+	public TooltipEntity(@Nonnull UUID id) {
 		this(null, null, id);
 	}
 
@@ -84,7 +84,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	public HoverShowEntity(@Nullable String name, @Nullable String type,
+	public TooltipEntity(@Nullable String name, @Nullable String type,
 			@Nonnull String uuid) {
 		super(HoverEvent.SHOW_ENTITY);
 		this.setName(name);
@@ -105,7 +105,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	public HoverShowEntity(@Nullable String type, @Nonnull String uuid) {
+	public TooltipEntity(@Nullable String type, @Nonnull String uuid) {
 		this(null, type, uuid);
 	}
 
@@ -119,7 +119,7 @@ public class HoverShowEntity extends HoverAction {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	public HoverShowEntity(@Nonnull String uuid) {
+	public TooltipEntity(@Nonnull String uuid) {
 		this(null, null, uuid);
 	}
 
@@ -139,10 +139,10 @@ public class HoverShowEntity extends HoverAction {
 	 * @param name
 	 *            the entity name. May be {@code null} to have the parameter
 	 *            left absent from the encoded JSON.
-	 * @return this action.
+	 * @return this tooltip.
 	 */
 	@Nonnull
-	public HoverShowEntity setName(@Nullable String name) {
+	public TooltipEntity setName(@Nullable String name) {
 		this.name = name;
 		return this;
 	}
@@ -165,10 +165,10 @@ public class HoverShowEntity extends HoverAction {
 	 * @param type
 	 *            the entity type. May be {@code null} to have the parameter
 	 *            left absent from the encoded JSON.
-	 * @return this action.
+	 * @return this tooltip.
 	 */
 	@Nonnull
-	public HoverShowEntity setType(@Nullable String type) {
+	public TooltipEntity setType(@Nullable String type) {
 		this.type = type;
 		return this;
 	}
@@ -188,12 +188,12 @@ public class HoverShowEntity extends HoverAction {
 	 * 
 	 * @param id
 	 *            the entity ID.
-	 * @return this action.
+	 * @return this tooltip.
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
 	@Nonnull
-	public HoverShowEntity setId(@Nonnull UUID id) {
+	public TooltipEntity setId(@Nonnull UUID id) {
 		this.id = Objects.requireNonNull(id, "id");
 		return this;
 	}
@@ -203,14 +203,14 @@ public class HoverShowEntity extends HoverAction {
 	 * 
 	 * @param uuid
 	 *            the entity UUID string.
-	 * @return this action.
+	 * @return this tooltip.
 	 * @throws NullPointerException
 	 *             if {@code uuid} is {@code null}.
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
 	@Nonnull
-	public HoverShowEntity setId(@Nonnull String uuid) {
+	public TooltipEntity setId(@Nonnull String uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 		UUID id = UUID.fromString(uuid);
 		return this.setId(id);

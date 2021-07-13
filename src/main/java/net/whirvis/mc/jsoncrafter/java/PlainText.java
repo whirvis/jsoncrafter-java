@@ -18,8 +18,7 @@ public class PlainText extends RichText {
 	 * Constructs a new instance of {@code PlainText}.
 	 * 
 	 * @param value
-	 *            the content of this text, will be converted into JSON via
-	 *            {@link #toJsonElement(Object)}.
+	 *            the content of this text, must be serializable to JSON.
 	 * @throws NullPointerException
 	 *             if {@code text} is {@code null}.
 	 */

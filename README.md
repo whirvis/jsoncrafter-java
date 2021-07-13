@@ -7,8 +7,8 @@
 [![Repo size](https://img.shields.io/github/repo-size/whirvis/mc-text-java)](#)
 [![Lines of code](https://img.shields.io/tokei/lines/github/whirvis/mc-text-java)](#)
 [![Codacy quality](https://app.codacy.com/project/badge/Grade/e05832a47aba460ead07c229c384461d)](https://www.codacy.com/gh/Whirvis/jsoncrafter-java/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Whirvis/jsoncrafter-java&amp;utm_campaign=Badge_Grade)
-[![Twitter](https://img.shields.io/twitter/follow/whirvis?color=%2300acee&label=%40whirvis&style=flat&logo=twitter)](#)
-[![YouTube](https://img.shields.io/youtube/channel/subscribers/UC9wxFSON2eQRSxE2OUznP8w?label=Whirvis&style=flat&logo=youtube&logoColor=red)](#)
+[![Twitter](https://img.shields.io/twitter/follow/whirvis?color=%2300acee&label=%40whirvis&style=flat&logo=twitter)](https://twitter.com/whirvis/)
+[![YouTube](https://img.shields.io/youtube/channel/subscribers/UC9wxFSON2eQRSxE2OUznP8w?label=Whirvis&style=flat&logo=youtube&logoColor=red)](https://www.youtube.com/channel/UC9wxFSON2eQRSxE2OUznP8w)
 
 #
 JSONcrafter is a library used to generate rich text in Minecraft using the [Raw JSON text format](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).

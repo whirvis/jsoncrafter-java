@@ -7,19 +7,19 @@
 [![Repo size](https://img.shields.io/github/repo-size/whirvis/mc-text-java)](#)
 [![Lines of code](https://img.shields.io/tokei/lines/github/whirvis/mc-text-java)](#)
 [![Codacy quality](https://app.codacy.com/project/badge/Grade/e05832a47aba460ead07c229c384461d)](https://www.codacy.com/gh/Whirvis/jsoncrafter-java/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Whirvis/jsoncrafter-java&amp;utm_campaign=Badge_Grade)
+[![Twitter](https://img.shields.io/twitter/follow/whirvis?color=%2300acee&label=%40whirvis&style=flat&logo=twitter)](#)
+[![YouTube](https://img.shields.io/youtube/channel/subscribers/UC9wxFSON2eQRSxE2OUznP8w?label=Whirvis&style=flat&logo=youtube&logoColor=red)](#)
 
 #
-JSONcrafter is library used to more generate rich text in Minecraft using its Raw JSON text format.
-This API works by taking away the need to manually generate JSON, allowing you the developer to more efficiently generate rich Minecraft text in code.
+JSONcrafter is a library used to generate rich text in Minecraft using the [Raw JSON text format](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).
+The API works by taking away the need to manually generate JSON, allowing the developer to more efficiently generate rich text in code.
 As the name and description suggest, this library is used to generate text for *Minecraft: Java Edition* specifically.
-There is **no** guarantee it will work with *Minecraft: Bedrock Edition*. A Bedrock version may be released in the future, but no promises.
+There is **no** guarantee it will work with *Minecraft: Bedrock Edition*.
 
 This API was created to aid the development of [Discraft](https://github.com/whirvis/discraft).
-As such, it is missing some components present in the Minecraft Raw JSON text API.
-This is due to the fact that mostly only needed components were implemented, so as to save time.
+As such, it is missing some components present in the rich text interface.
+This is due to the fact that (mostly) only components that were actually needed by Discraft were implemented, to save time.
 If requested, these missing features will be added in the future.
 
 ## Documentation Notice
-Some documentation found in this API is taken straight from the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).
-No plagiarism is intended. All text written by the authors at the Minecraft Wiki belongs to their respective owners.
-If requested, the documentation will be updated.
+Some documentation found in this API is copied from the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).

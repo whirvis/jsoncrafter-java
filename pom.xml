@@ -9,7 +9,7 @@
 
 	<name>JSONcrafter Java</name>
 	<description>A library for generating JSON text for Minecraft: Java Edition.</description>
-	<url>https://github.com/whirvis/mc-text-java</url>
+	<url>https://github.com/whirvis/jsoncrafter-java</url>
 	<inceptionYear>2021</inceptionYear>
 
 	<properties>

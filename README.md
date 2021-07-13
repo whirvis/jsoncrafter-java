@@ -19,7 +19,7 @@ As such, it is missing some components present in the Minecraft Raw JSON text AP
 This is due to the fact that mostly only needed components were implemented, so as to save time.
 If requested, these missing features will be added in the future.
 
-# Documentation Notice
+## Documentation Notice
 Some documentation found in this API is taken straight from the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Raw_JSON_text_format).
 No plagiarism is intended. All text written by the authors at the Minecraft Wiki belongs to their respective owners.
 If requested, the documentation will be updated.

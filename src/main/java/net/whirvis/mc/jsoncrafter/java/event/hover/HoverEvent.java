@@ -64,7 +64,9 @@ public class HoverEvent extends TextEvent {
 	public HoverEvent show(@Nullable Iterable<?> values) {
 		this.setAction(SHOW_TEXT);
 		List<RichText> texts = RichText.persuade(values);
-		this.value = !texts.isEmpty() ? (RichText[]) texts.toArray() : null;
+		this.value = !texts.isEmpty()
+				? texts.toArray(new RichText[texts.size()])
+				: null;
 		return this;
 	}
 

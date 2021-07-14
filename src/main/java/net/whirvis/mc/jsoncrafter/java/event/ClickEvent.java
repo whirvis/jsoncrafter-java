@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 /**
- * Allows for events to occur when the player clicks on text. This only works in
- * chat messages and written books, unless specified otherwise.
+ * Allows for events to occur when the player clicks on text. Usually, this
+ * works only with chat messages and written books.
  * <p>
  * More information on click events can be found on the <a href=
  * "https://minecraft.fandom.com/wiki/Raw_JSON_text_format#Java_Edition">Minecraft

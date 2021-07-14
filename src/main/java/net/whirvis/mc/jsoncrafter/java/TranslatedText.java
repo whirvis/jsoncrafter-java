@@ -8,9 +8,9 @@ import com.google.gson.JsonObject;
 
 /**
  * Displays a translated piece of text from the currently selected language.
- * This uses the client's selected language, so if players with their games set
- * to different languages are logged into the same server, each will see the
- * component in their own language.
+ * This uses the client's selected language. As such, if two players have their
+ * games set to different languages on the same server, each will see the
+ * message in their own language.
  * <p>
  * Translated text works by specifying a translation key (which can be found in
  * the game's JSON language files), and then specifying "with" values. These are

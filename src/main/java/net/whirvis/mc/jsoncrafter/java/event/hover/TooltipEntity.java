@@ -3,8 +3,8 @@ package net.whirvis.mc.jsoncrafter.java.event.hover;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
 
@@ -34,7 +34,7 @@ public class TooltipEntity extends HoverTooltip {
 	 *             if {@code id} is {@code null}.
 	 */
 	public TooltipEntity(@Nullable String name, @Nullable String type,
-			@Nonnull UUID id) {
+			@NotNull UUID id) {
 		super(HoverEvent.SHOW_ENTITY);
 		this.setName(name);
 		this.setType(type);
@@ -52,7 +52,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	public TooltipEntity(@Nullable String type, @Nonnull UUID id) {
+	public TooltipEntity(@Nullable String type, @NotNull UUID id) {
 		this(null, type, id);
 	}
 
@@ -64,7 +64,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	public TooltipEntity(@Nonnull UUID id) {
+	public TooltipEntity(@NotNull UUID id) {
 		this(null, null, id);
 	}
 
@@ -85,7 +85,7 @@ public class TooltipEntity extends HoverTooltip {
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
 	public TooltipEntity(@Nullable String name, @Nullable String type,
-			@Nonnull String uuid) {
+			@NotNull String uuid) {
 		super(HoverEvent.SHOW_ENTITY);
 		this.setName(name);
 		this.setType(type);
@@ -105,7 +105,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	public TooltipEntity(@Nullable String type, @Nonnull String uuid) {
+	public TooltipEntity(@Nullable String type, @NotNull String uuid) {
 		this(null, type, uuid);
 	}
 
@@ -119,7 +119,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	public TooltipEntity(@Nonnull String uuid) {
+	public TooltipEntity(@NotNull String uuid) {
 		this(null, null, uuid);
 	}
 
@@ -141,7 +141,7 @@ public class TooltipEntity extends HoverTooltip {
 	 *            left absent from the encoded JSON.
 	 * @return this tooltip.
 	 */
-	@Nonnull
+	@NotNull
 	public TooltipEntity setName(@Nullable String name) {
 		this.name = name;
 		return this;
@@ -154,7 +154,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * 
 	 * @return the entity type.
 	 */
-	@Nonnull
+	@NotNull
 	public String getType() {
 		return RichText.nullFallback(type, "minecraft:pig");
 	}
@@ -167,7 +167,7 @@ public class TooltipEntity extends HoverTooltip {
 	 *            left absent from the encoded JSON.
 	 * @return this tooltip.
 	 */
-	@Nonnull
+	@NotNull
 	public TooltipEntity setType(@Nullable String type) {
 		this.type = type;
 		return this;
@@ -178,7 +178,7 @@ public class TooltipEntity extends HoverTooltip {
 	 * 
 	 * @return the entity ID.
 	 */
-	@Nonnull
+	@NotNull
 	public UUID getId() {
 		return this.id;
 	}
@@ -192,8 +192,8 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws NullPointerException
 	 *             if {@code id} is {@code null}.
 	 */
-	@Nonnull
-	public TooltipEntity setId(@Nonnull UUID id) {
+	@NotNull
+	public TooltipEntity setId(@NotNull UUID id) {
 		this.id = Objects.requireNonNull(id, "id");
 		return this;
 	}
@@ -209,8 +209,8 @@ public class TooltipEntity extends HoverTooltip {
 	 * @throws IllegalArgumentException
 	 *             if {@code uuid} is not a valid UUID string.
 	 */
-	@Nonnull
-	public TooltipEntity setId(@Nonnull String uuid) {
+	@NotNull
+	public TooltipEntity setId(@NotNull String uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 		UUID id = UUID.fromString(uuid);
 		return this.setId(id);

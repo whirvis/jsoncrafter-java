@@ -1,6 +1,6 @@
 package net.whirvis.mc.jsoncrafter.java;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Displays plain text.
@@ -22,7 +22,7 @@ public class PlainText extends RichText {
 	 * @throws NullPointerException
 	 *             if {@code text} is {@code null}.
 	 */
-	public PlainText(@Nonnull Object value) {
+	public PlainText(@NotNull Object value) {
 		super("text", value);
 	}
 

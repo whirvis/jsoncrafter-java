@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.whirvis</groupId>
 	<artifactId>mc.jsoncrafter.java</artifactId>
-	<version>1.0.1-BETA</version>
+	<version>1.0.2-BETA</version>
 
 	<name>JSONcrafter Java</name>
 	<description>A library for generating JSON text for Minecraft: Java Edition.</description>
@@ -35,11 +35,11 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>16.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

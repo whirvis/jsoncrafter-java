@@ -3,8 +3,8 @@ package net.whirvis.mc.jsoncrafter.java.event.hover;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,7 +37,7 @@ public class HoverEvent extends TextEvent {
 	}
 
 	@Override
-	public boolean supportsAction(@Nonnull String action) {
+	public boolean supportsAction(@NotNull String action) {
 		switch (action) {
 			case SHOW_TEXT:
 			case SHOW_ITEM:
@@ -60,7 +60,7 @@ public class HoverEvent extends TextEvent {
 	 *            {@link RichText#persuade(Object)}.
 	 * @return this event.
 	 */
-	@Nonnull
+	@NotNull
 	public HoverEvent show(@Nullable Iterable<?> values) {
 		this.setAction(SHOW_TEXT);
 		List<RichText> texts = RichText.persuade(values);
@@ -85,7 +85,7 @@ public class HoverEvent extends TextEvent {
 	 *            {@link RichText#persuade(Object)}.
 	 * @return this event.
 	 */
-	@Nonnull
+	@NotNull
 	public final HoverEvent show(@Nullable Object... values) {
 		return this.show(values != null ? Arrays.asList(values) : null);
 	}
@@ -101,7 +101,7 @@ public class HoverEvent extends TextEvent {
 	 *            the tooltip to show.
 	 * @return this event.
 	 */
-	@Nonnull
+	@NotNull
 	public HoverEvent show(@Nullable HoverTooltip tooltip) {
 		this.setAction(tooltip.getAction());
 		this.value = tooltip;

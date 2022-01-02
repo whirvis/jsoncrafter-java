@@ -1,7 +1,7 @@
 package net.whirvis.mc.jsoncrafter.java;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,7 +59,7 @@ public class TranslatedText extends RichText {
 	 * @throws NullPointerException
 	 *             if {@code translate} is {@code null}.
 	 */
-	public TranslatedText(@Nonnull String translate, @Nullable Object... with) {
+	public TranslatedText(@NotNull String translate, @Nullable Object... with) {
 		super("translate", translate);
 		this.setWith(with);
 	}
@@ -72,7 +72,7 @@ public class TranslatedText extends RichText {
 	 *            to JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public TranslatedText setWith(@Nullable Object... with) {
 		this.with = with;
 		return this;

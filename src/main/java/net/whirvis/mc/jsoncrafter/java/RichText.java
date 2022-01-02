@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import org.bukkit.ChatColor;
 
@@ -318,7 +318,7 @@ public class RichText {
 	 * @throws NullPointerException
 	 *             if {@code type} or {@code content} are {@code null}.
 	 */
-	public RichText(@Nonnull String type, @Nonnull Object content) {
+	public RichText(@NotNull String type, @NotNull Object content) {
 		this.type = type;
 		this.setContent(content);
 		this.extra = new Node<>(this);
@@ -330,7 +330,7 @@ public class RichText {
 	 * 
 	 * @return the content type of this text.
 	 */
-	@Nonnull
+	@NotNull
 	public final String getType() {
 		return this.type;
 	}
@@ -340,7 +340,7 @@ public class RichText {
 	 * 
 	 * @return the content of this text.
 	 */
-	@Nonnull
+	@NotNull
 	public Object getContent() {
 		return this.content;
 	}
@@ -354,8 +354,8 @@ public class RichText {
 	 * @throws NullPointerException
 	 *             if {@code content} is {@code null}.
 	 */
-	@Nonnull
-	public RichText setContent(@Nonnull Object content) {
+	@NotNull
+	public RichText setContent(@NotNull Object content) {
 		this.content = Objects.requireNonNull(content, "content");
 		return this;
 	}
@@ -375,7 +375,7 @@ public class RichText {
 	 * 
 	 * @return the child text components of this text.
 	 */
-	@Nonnull
+	@NotNull
 	public List<RichText> getExtra() {
 		List<RichText> extraData = new ArrayList<>();
 		for (Node<RichText> node : extra.getChildren()) {
@@ -398,8 +398,8 @@ public class RichText {
 	 * @throws IllegalArgumentException
 	 *             if a child component is {@code this}.
 	 */
-	@Nonnull
-	public RichText addExtra(@Nonnull Iterable<RichText> texts) {
+	@NotNull
+	public RichText addExtra(@NotNull Iterable<RichText> texts) {
 		Objects.requireNonNull(texts, "texts");
 		for (RichText text : texts) {
 			Objects.requireNonNull(text, "text");
@@ -425,8 +425,8 @@ public class RichText {
 	 * @throws IllegalArgumentException
 	 *             if a child component is {@code this}.
 	 */
-	@Nonnull
-	public final RichText addExtra(@Nonnull RichText... texts) {
+	@NotNull
+	public final RichText addExtra(@NotNull RichText... texts) {
 		Objects.requireNonNull(texts, "texts");
 		return this.addExtra(Arrays.asList(texts));
 	}
@@ -438,7 +438,7 @@ public class RichText {
 	 *            the child components.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText removeExtra(@Nullable Iterable<RichText> texts) {
 		if (texts == null) {
 			return this;
@@ -469,7 +469,7 @@ public class RichText {
 	 *            the child components.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public final RichText removeExtra(@Nullable RichText... texts) {
 		return this.removeExtra(texts != null ? Arrays.asList(texts) : null);
 	}
@@ -479,7 +479,7 @@ public class RichText {
 	 * 
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText clearExtra() {
 		extra.removeChildren();
 		return this;
@@ -493,7 +493,7 @@ public class RichText {
 	 * 
 	 * @return the text color.
 	 */
-	@Nonnull
+	@NotNull
 	public String getColor() {
 		return nullFallback(color, "white");
 	}
@@ -506,7 +506,7 @@ public class RichText {
 	 *            absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setColor(@Nullable String color) {
 		this.color = color;
 		return this;
@@ -522,7 +522,7 @@ public class RichText {
 	 *            the RGB color value.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public final RichText setColor(int rgb) {
 		return this.setColor("#" + Integer.toHexString(rgb));
 	}
@@ -540,7 +540,7 @@ public class RichText {
 	 *             if {@code color} is not a color.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public final RichText setColor(@Nullable ChatColor color) {
 		if (color == null) {
 			return this.setColor((String) null);
@@ -557,7 +557,7 @@ public class RichText {
 	 * 
 	 * @return the font this text is rendered with.
 	 */
-	@Nonnull
+	@NotNull
 	public String getFont() {
 		return nullFallback(font, "minecraft:default");
 	}
@@ -570,7 +570,7 @@ public class RichText {
 	 *            the parameter left absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setFont(@Nullable String font) {
 		this.font = font;
 		return this;
@@ -596,7 +596,7 @@ public class RichText {
 	 *            absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setBold(@Nullable Boolean bold) {
 		this.bold = bold;
 		return this;
@@ -622,7 +622,7 @@ public class RichText {
 	 *            absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setItalic(@Nullable Boolean italic) {
 		this.italic = italic;
 		return this;
@@ -648,7 +648,7 @@ public class RichText {
 	 *            absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setUnderlined(@Nullable Boolean underlined) {
 		this.underlined = underlined;
 		return this;
@@ -675,7 +675,7 @@ public class RichText {
 	 *            parameter left absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setStrikethrough(@Nullable Boolean strikethrough) {
 		this.strikethrough = strikethrough;
 		return this;
@@ -701,7 +701,7 @@ public class RichText {
 	 *            absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setObfuscated(@Nullable Boolean obfuscated) {
 		this.obfuscated = obfuscated;
 		return this;
@@ -716,7 +716,7 @@ public class RichText {
 	 * @return the text that will be inserted into the player's chatbar when
 	 *         they shift click this text.
 	 */
-	@Nonnull
+	@NotNull
 	public String getInsertion() {
 		return nullFallback(insertion, "");
 	}
@@ -730,7 +730,7 @@ public class RichText {
 	 *            have the parameter left absent from the encoded JSON.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText setInsertion(@Nullable String insertion) {
 		this.insertion = insertion;
 		return this;
@@ -775,7 +775,7 @@ public class RichText {
 	 * 
 	 * @return the text events.
 	 */
-	@Nonnull
+	@NotNull
 	public Collection<TextEvent> getEvents() {
 		return Collections.unmodifiableCollection(events.values());
 	}
@@ -793,8 +793,8 @@ public class RichText {
 	 *             if {@code event} is {@code null}.
 	 * @return this text.
 	 */
-	@Nonnull
-	public RichText addEvent(@Nonnull TextEvent event) {
+	@NotNull
+	public RichText addEvent(@NotNull TextEvent event) {
 		Objects.requireNonNull(event, "event");
 		events.put(event.getType(), event);
 		return this;
@@ -807,7 +807,7 @@ public class RichText {
 	 *            the text event.
 	 * @return this text.
 	 */
-	@Nonnull
+	@NotNull
 	public RichText removeEvent(@Nullable TextEvent event) {
 		if (event != null) {
 			events.remove(event.getType(), event);

@@ -3,8 +3,8 @@ package net.whirvis.mc.jsoncrafter.java.event;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -48,7 +48,7 @@ public class ClickEvent extends TextEvent {
 	}
 
 	@Override
-	public boolean supportsAction(@Nonnull String action) {
+	public boolean supportsAction(@NotNull String action) {
 		switch (action) {
 			case OPEN_URL:
 			case RUN_COMMAND:
@@ -84,7 +84,7 @@ public class ClickEvent extends TextEvent {
 	 *            the text, may be {@code null} for no text.
 	 * @return this event.
 	 */
-	@Nonnull
+	@NotNull
 	public ClickEvent setText(@Nullable String text) {
 		this.value = text;
 		return this;
@@ -113,7 +113,7 @@ public class ClickEvent extends TextEvent {
 	 *            the URL, may be {@code null} for no URL.
 	 * @return this event.
 	 */
-	@Nonnull
+	@NotNull
 	public ClickEvent setURL(@Nullable URL url) {
 		this.value = url;
 		return this;
@@ -131,7 +131,7 @@ public class ClickEvent extends TextEvent {
 	 * @throws IllegalArgumentException
 	 *             if {@code url} is malformed.
 	 */
-	@Nonnull
+	@NotNull
 	public final ClickEvent setURL(@Nullable String url) {
 		try {
 			return this.setURL(new URL(url));
@@ -164,7 +164,7 @@ public class ClickEvent extends TextEvent {
 	 * @throws IllegalArgumentException
 	 *             if {@code page} is negative.
 	 */
-	@Nonnull
+	@NotNull
 	public ClickEvent setPage(@Nullable Integer page) {
 		if (page != null && page < 0) {
 			throw new IllegalArgumentException("page < 0");

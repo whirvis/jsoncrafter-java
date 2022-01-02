@@ -1,7 +1,7 @@
 package net.whirvis.mc.jsoncrafter.java.event.hover;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
 
@@ -76,7 +76,7 @@ public class TooltipItem extends HoverTooltip {
 	 * 
 	 * @return the item namesapce ID.
 	 */
-	@Nonnull
+	@NotNull
 	public String getId() {
 		return RichText.nullFallback(id, "minecraft:air");
 	}
@@ -89,7 +89,7 @@ public class TooltipItem extends HoverTooltip {
 	 *            parameter left absent from the encoded JSON.
 	 * @return this tooltip.
 	 */
-	@Nonnull
+	@NotNull
 	public TooltipItem setId(@Nullable String id) {
 		this.id = id;
 		return this;
@@ -114,7 +114,7 @@ public class TooltipItem extends HoverTooltip {
 	 *            parameter left absent from the encoded JSON.
 	 * @return this tooltip.
 	 */
-	@Nonnull
+	@NotNull
 	public TooltipItem setCount(@Nullable Integer count) {
 		this.count = count;
 		return this;
@@ -138,7 +138,7 @@ public class TooltipItem extends HoverTooltip {
 	 *            parameter left absent from the encoded JSON.
 	 * @return this tooltip.
 	 */
-	@Nonnull
+	@NotNull
 	public TooltipItem setTag(@Nullable String tag) {
 		this.tag = tag;
 		return this;

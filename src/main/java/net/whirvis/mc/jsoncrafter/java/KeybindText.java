@@ -1,6 +1,6 @@
 package net.whirvis.mc.jsoncrafter.java;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Displays the name of the button that is currently bound to a certain
@@ -37,7 +37,7 @@ public class KeybindText extends RichText {
 	 * @throws NullPointerException
 	 *             if {@code key} is {@code null}.
 	 */
-	public KeybindText(@Nonnull String keybind) {
+	public KeybindText(@NotNull String keybind) {
 		super("keybind", keybind);
 	}
 

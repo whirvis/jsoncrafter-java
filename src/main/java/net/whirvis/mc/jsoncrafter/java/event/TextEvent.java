@@ -2,8 +2,8 @@ package net.whirvis.mc.jsoncrafter.java.event;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
@@ -36,7 +36,7 @@ public abstract class TextEvent {
 	 * @param type
 	 *            the event type.
 	 */
-	public TextEvent(@Nonnull String type) {
+	public TextEvent(@NotNull String type) {
 		this.type = Objects.requireNonNull(type, "type");
 	}
 
@@ -53,7 +53,7 @@ public abstract class TextEvent {
 	 * @throws IllegalArgumentException
 	 *             if {@code action} is not supported.
 	 */
-	public TextEvent(@Nonnull String type, @Nullable String action) {
+	public TextEvent(@NotNull String type, @Nullable String action) {
 		this(type);
 		this.setAction(action);
 	}
@@ -63,7 +63,7 @@ public abstract class TextEvent {
 	 * 
 	 * @return the event type name.
 	 */
-	@Nonnull
+	@NotNull
 	public final String getType() {
 		return this.type;
 	}
@@ -76,7 +76,7 @@ public abstract class TextEvent {
 	 * @return {@code true} if this events supports {@code action},
 	 *         {@code false} otherwise.
 	 */
-	public abstract boolean supportsAction(@Nonnull String action);
+	public abstract boolean supportsAction(@NotNull String action);
 
 	/**
 	 * Returns the course of action to take in response to this event.
@@ -97,7 +97,7 @@ public abstract class TextEvent {
 	 * @throws IllegalArgumentException
 	 *             if {@code action} is not supported.
 	 */
-	@Nonnull
+	@NotNull
 	public TextEvent setAction(@Nullable String action) {
 		if (action != null && !this.supportsAction(action)) {
 			throw new IllegalArgumentException("unsupported action");

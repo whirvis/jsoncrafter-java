@@ -2,7 +2,7 @@ package net.whirvis.mc.jsoncrafter.java.event.hover;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonObject;
 
@@ -21,7 +21,7 @@ public abstract class HoverTooltip {
 	 * @throws NullPointerException
 	 *             if {@code action} is {@code null}.
 	 */
-	public HoverTooltip(@Nonnull String action) {
+	public HoverTooltip(@NotNull String action) {
 		this.action = Objects.requireNonNull(action, "action");
 	}
 
@@ -30,7 +30,7 @@ public abstract class HoverTooltip {
 	 * 
 	 * @return the action name.
 	 */
-	@Nonnull
+	@NotNull
 	public final String getAction() {
 		return this.action;
 	}
@@ -40,7 +40,7 @@ public abstract class HoverTooltip {
 	 * 
 	 * @return the encoded JSON.
 	 */
-	@Nonnull
+	@NotNull
 	protected abstract JsonObject toJson();
 
 }
